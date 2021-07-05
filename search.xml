@@ -826,6 +826,385 @@
       </tags>
   </entry>
   <entry>
+    <title>demo</title>
+    <url>/2021/07/05/quartz-xue-xi/</url>
+    <content><![CDATA[<h1 id="Quartz学习笔记"><a href="#Quartz学习笔记" class="headerlink" title="Quartz学习笔记"></a>Quartz学习笔记</h1><hr>
+<h2 id="Quartz简介"><a href="#Quartz简介" class="headerlink" title="Quartz简介"></a>Quartz简介</h2><h3 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h3><p>Quartz是OpenSymphony提供的开源任务调度框架</p>
+<p>官网：<a href="http://www.quartz-scheduler.org/">http://www.quartz-scheduler.org/</a></p>
+<p>纯Java实现，精细控制排程。</p>
+<h3 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h3><ul>
+<li>强大的调度功能</li>
+<li>灵活的应用方式</li>
+<li>分布式和集群能力</li>
+</ul>
+<h3 id="Quartz的设计模式"><a href="#Quartz的设计模式" class="headerlink" title="Quartz的设计模式"></a>Quartz的设计模式</h3><ul>
+<li>Builder模式</li>
+<li>Factory模式</li>
+<li>组件模式</li>
+<li>链式写法</li>
+</ul>
+<hr>
+<h2 id="Quartz体系结构"><a href="#Quartz体系结构" class="headerlink" title="Quartz体系结构"></a>Quartz体系结构</h2><h3 id="三个核心概念"><a href="#三个核心概念" class="headerlink" title="三个核心概念"></a>三个核心概念</h3><ul>
+<li>调度器</li>
+<li>任务</li>
+<li>触发器</li>
+</ul>
+<p>JobDetail : 包含了任务的实现类以及类的信息</p>
+<p>trigger : 决定任务什么时候被调用</p>
+<ul>
+<li>SimpleTrigger</li>
+<li>CronTrigger : 实现更复杂的业务逻辑，更常用</li>
+</ul>
+<p>scheduler : 可以定时定频率获得JobDetail的信息，把JobDetail和trigger绑定到了一起</p>
+<h3 id="总要组成"><a href="#总要组成" class="headerlink" title="总要组成"></a>总要组成</h3><ul>
+<li>Job</li>
+<li>JobDetail</li>
+<li>JobBuilder</li>
+<li>JobStore</li>
+<li>Trigger</li>
+<li>TriggerBuilder</li>
+<li>ThreadPool</li>
+<li>Scheduler</li>
+<li>Calendar : 一个Trigger可以和多个Calendar关联，以排除或包含某些时间点</li>
+<li>监听器<ul>
+<li>JobListener</li>
+<li>TriggerListener</li>
+<li>SchedulerListener</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="手写简单的Quartz-Demo"><a href="#手写简单的Quartz-Demo" class="headerlink" title="手写简单的Quartz Demo"></a>手写简单的Quartz Demo</h2><blockquote>
+<p>完成一个每两秒钟打印一个Hello World的功能</p>
+</blockquote>
+<p><strong>Job</strong></p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">HelloJob</span> <span class="token keyword">implements</span> <span class="token class-name">Job</span> <span class="token punctuation">{</span>
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">execute</span><span class="token punctuation">(</span><span class="token class-name">JobExecutionContext</span> jobExecutionContext<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">JobExecutionException</span> <span class="token punctuation">{</span>
+
+        <span class="token comment">// 打印当前的执行时间，格式为2017-01-01 00：00：00</span>
+        <span class="token class-name">Date</span> date <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Date</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">SimpleDateFormat</span> sf <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">SimpleDateFormat</span><span class="token punctuation">(</span><span class="token string">"yyyy-MM-dd HH:mm:ss"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"Current Exec Time Is:"</span> <span class="token operator">+</span> sf<span class="token punctuation">.</span><span class="token function">format</span><span class="token punctuation">(</span>date<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// 编写具体的业务逻辑</span>
+        <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"Hello World!"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><strong>Scheduler</strong></p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">HelloScheduler</span> <span class="token punctuation">{</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">SchedulerException</span> <span class="token punctuation">{</span>
+
+        <span class="token comment">// 创建一个JobDetail实例，将该实例与HelloJob Class绑定</span>
+        <span class="token class-name">JobDetail</span> jobDetail <span class="token operator">=</span> <span class="token class-name">JobBuilder</span><span class="token punctuation">.</span><span class="token function">newJob</span><span class="token punctuation">(</span><span class="token class-name">HelloJob</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span>
+                <span class="token punctuation">.</span><span class="token function">withIdentity</span><span class="token punctuation">(</span><span class="token string">"myJob"</span><span class="token punctuation">,</span> <span class="token string">"group1"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">build</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// 创建一个Trigger实例，定义该Job立即执行，并且每隔两秒钟执行一次，直到永远</span>
+        <span class="token class-name">Trigger</span> trigger <span class="token operator">=</span> <span class="token class-name">TriggerBuilder</span><span class="token punctuation">.</span><span class="token function">newTrigger</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+                <span class="token punctuation">.</span><span class="token function">withIdentity</span><span class="token punctuation">(</span><span class="token string">"myTrigger"</span><span class="token punctuation">,</span> <span class="token string">"group1"</span><span class="token punctuation">)</span>
+                <span class="token punctuation">.</span><span class="token function">startNow</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+                <span class="token punctuation">.</span><span class="token function">withSchedule</span><span class="token punctuation">(</span>
+                        <span class="token class-name">SimpleScheduleBuilder</span><span class="token punctuation">.</span><span class="token function">simpleSchedule</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+                        <span class="token punctuation">.</span><span class="token function">withIntervalInSeconds</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">repeatForever</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+                <span class="token punctuation">.</span><span class="token function">build</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// 创建Scheduler实例</span>
+        <span class="token class-name">SchedulerFactory</span> sfact <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">StdSchedulerFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">Scheduler</span> scheduler <span class="token operator">=</span> sfact<span class="token punctuation">.</span><span class="token function">getScheduler</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        scheduler<span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// 打印当前的时间，格式为2017-01-01 00：00：00</span>
+        <span class="token class-name">Date</span> date <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Date</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">SimpleDateFormat</span> sf <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">SimpleDateFormat</span><span class="token punctuation">(</span><span class="token string">"yyyy-MM-dd HH:mm:ss"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"Current Exec Time Is:"</span> <span class="token operator">+</span> sf<span class="token punctuation">.</span><span class="token function">format</span><span class="token punctuation">(</span>date<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        scheduler<span class="token punctuation">.</span><span class="token function">scheduleJob</span><span class="token punctuation">(</span>jobDetail<span class="token punctuation">,</span> trigger<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<hr>
+<h2 id="Job-amp-JobDetail"><a href="#Job-amp-JobDetail" class="headerlink" title="Job &amp; JobDetail"></a>Job &amp; JobDetail</h2><h3 id="Job定义"><a href="#Job定义" class="headerlink" title="Job定义"></a>Job定义</h3><p>实现业务逻辑的任务接口</p>
+<p>Job接口非常容易实现，只有一个execute方法，类似TimerTask的run方法，在里面编写业务逻辑</p>
+<h3 id="Job源码"><a href="#Job源码" class="headerlink" title="Job源码"></a>Job源码</h3><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">package</span> <span class="token namespace">org<span class="token punctuation">.</span>quartz</span><span class="token punctuation">;</span>
+<span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">Job</span> <span class="token punctuation">{</span>
+  <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">execute</span><span class="token punctuation">(</span><span class="token class-name">JobExecutionContext</span> context<span class="token punctuation">)</span>
+    <span class="token keyword">throws</span> <span class="token class-name">JobExecutionException</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Job生命周期"><a href="#Job生命周期" class="headerlink" title="Job生命周期"></a>Job生命周期</h3><p>每次调度器执行Job时，它在调用execute方法前会创建一个新的job实例。</p>
+<p>当调用完成后，关联的Job对象实例会被释放，释放的实例会被垃圾回收机制回收。</p>
+<h3 id="JobDetail"><a href="#JobDetail" class="headerlink" title="JobDetail"></a>JobDetail</h3><p>JobDetail为Job实例提供了许多设置属性，以及JobDataMap成员变量属性，它用来存储特定Job实例的状态信息，调度器需要借助JobDetail对象来添加Job实例。</p>
+<h3 id="JobDetail重要属性"><a href="#JobDetail重要属性" class="headerlink" title="JobDetail重要属性"></a>JobDetail重要属性</h3><ul>
+<li>name（任务的名称）</li>
+<li>group（任务所在的组）</li>
+<li>jobClass（任务的实现类）</li>
+<li>jobDataMap</li>
+</ul>
+<hr>
+<h2 id="JobExecutionContext-amp-JobDataMap"><a href="#JobExecutionContext-amp-JobDataMap" class="headerlink" title="JobExecutionContext &amp; JobDataMap"></a>JobExecutionContext &amp; JobDataMap</h2><h3 id="JobExecutionContext是什么"><a href="#JobExecutionContext是什么" class="headerlink" title="JobExecutionContext是什么"></a>JobExecutionContext是什么</h3><ul>
+<li>当Scheduler调用一个Job，就会将JobExecutionContext传递给Job的execute()方法；</li>
+<li>Job能通过JobExecutionContext对象访问到Quartz运行时候的环境以及Job本身的明细数据</li>
+</ul>
+<h3 id="JobDataMap是什么"><a href="#JobDataMap是什么" class="headerlink" title="JobDataMap是什么"></a>JobDataMap是什么</h3><ul>
+<li>在进行任务调度时JobDataMap存储在JobExecutionContext中，非常方便获取。</li>
+<li>JobDataMap可以用来装载任何可序列化的数据对象，当Job实例对象被执行时这些参数对象会传递给它。</li>
+<li>JobDataMap实现了JDK的Map接口，并且添加了一些非常方便的方法用来存取基本数据类型。</li>
+</ul>
+<h3 id="获取JobDataMap的两种方式"><a href="#获取JobDataMap的两种方式" class="headerlink" title="获取JobDataMap的两种方式"></a>获取JobDataMap的两种方式</h3><ul>
+<li>从Map中直接获取</li>
+</ul>
+<p><strong>Scheduler</strong></p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">HelloScheduler</span> <span class="token punctuation">{</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">SchedulerException</span> <span class="token punctuation">{</span>
+
+        <span class="token comment">// 创建一个JobDetail实例，将该实例与HelloJob Class绑定</span>
+        <span class="token class-name">JobDetail</span> jobDetail <span class="token operator">=</span> <span class="token class-name">JobBuilder</span><span class="token punctuation">.</span><span class="token function">newJob</span><span class="token punctuation">(</span><span class="token class-name">HelloJob</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span>
+                <span class="token punctuation">.</span><span class="token function">withIdentity</span><span class="token punctuation">(</span><span class="token string">"myJob"</span><span class="token punctuation">,</span> <span class="token string">"group1"</span><span class="token punctuation">)</span>
+                <span class="token punctuation">.</span><span class="token function">usingJobData</span><span class="token punctuation">(</span><span class="token string">"message"</span><span class="token punctuation">,</span> <span class="token string">"hello myJob1"</span><span class="token punctuation">)</span>
+                <span class="token punctuation">.</span><span class="token function">usingJobData</span><span class="token punctuation">(</span><span class="token string">"FloatJobValue"</span><span class="token punctuation">,</span> <span class="token number">3.14F</span><span class="token punctuation">)</span>
+                <span class="token punctuation">.</span><span class="token function">build</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// 创建一个Trigger实例，定义该Job立即执行，并且每隔两秒钟执行一次，直到永远</span>
+        <span class="token class-name">Trigger</span> trigger <span class="token operator">=</span> <span class="token class-name">TriggerBuilder</span><span class="token punctuation">.</span><span class="token function">newTrigger</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+                <span class="token punctuation">.</span><span class="token function">withIdentity</span><span class="token punctuation">(</span><span class="token string">"myTrigger"</span><span class="token punctuation">,</span> <span class="token string">"group1"</span><span class="token punctuation">)</span>
+                <span class="token punctuation">.</span><span class="token function">usingJobData</span><span class="token punctuation">(</span><span class="token string">"message"</span><span class="token punctuation">,</span> <span class="token string">"hello myTrigger1"</span><span class="token punctuation">)</span>
+                <span class="token punctuation">.</span><span class="token function">usingJobData</span><span class="token punctuation">(</span><span class="token string">"DoubleTriggerValue"</span><span class="token punctuation">,</span> <span class="token number">2.0D</span><span class="token punctuation">)</span>
+                <span class="token punctuation">.</span><span class="token function">startNow</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+                <span class="token punctuation">.</span><span class="token function">withSchedule</span><span class="token punctuation">(</span>
+                        <span class="token class-name">SimpleScheduleBuilder</span><span class="token punctuation">.</span><span class="token function">simpleSchedule</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+                        <span class="token punctuation">.</span><span class="token function">withIntervalInSeconds</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">repeatForever</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+                <span class="token punctuation">.</span><span class="token function">build</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// 创建Scheduler实例</span>
+        <span class="token class-name">SchedulerFactory</span> sfact <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">StdSchedulerFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">Scheduler</span> scheduler <span class="token operator">=</span> sfact<span class="token punctuation">.</span><span class="token function">getScheduler</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        scheduler<span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// 打印当前的时间，格式为2017-01-01 00：00：00</span>
+        <span class="token class-name">Date</span> date <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Date</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">SimpleDateFormat</span> sf <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">SimpleDateFormat</span><span class="token punctuation">(</span><span class="token string">"yyyy-MM-dd HH:mm:ss"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"Current Exec Time Is:"</span> <span class="token operator">+</span> sf<span class="token punctuation">.</span><span class="token function">format</span><span class="token punctuation">(</span>date<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        scheduler<span class="token punctuation">.</span><span class="token function">scheduleJob</span><span class="token punctuation">(</span>jobDetail<span class="token punctuation">,</span> trigger<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><strong>Job</strong></p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">HelloJob</span> <span class="token keyword">implements</span> <span class="token class-name">Job</span> <span class="token punctuation">{</span>
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">execute</span><span class="token punctuation">(</span><span class="token class-name">JobExecutionContext</span> jobExecutionContext<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">JobExecutionException</span> <span class="token punctuation">{</span>
+
+        <span class="token comment">// 打印当前的执行时间，格式为2017-01-01 00：00：00</span>
+        <span class="token class-name">Date</span> date <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Date</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">SimpleDateFormat</span> sf <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">SimpleDateFormat</span><span class="token punctuation">(</span><span class="token string">"yyyy-MM-dd HH:mm:ss"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"Current Exec Time Is:"</span> <span class="token operator">+</span> sf<span class="token punctuation">.</span><span class="token function">format</span><span class="token punctuation">(</span>date<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// 编写具体的业务逻辑</span>
+        <span class="token class-name">JobKey</span> key <span class="token operator">=</span> jobExecutionContext<span class="token punctuation">.</span><span class="token function">getJobDetail</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getKey</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"My Name And Group Are "</span> <span class="token operator">+</span> key<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">":"</span> <span class="token operator">+</span> key<span class="token punctuation">.</span><span class="token function">getGroup</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token class-name">TriggerKey</span> trKey <span class="token operator">=</span> jobExecutionContext<span class="token punctuation">.</span><span class="token function">getTrigger</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getKey</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"My Trigger And Group Are "</span> <span class="token operator">+</span> trKey<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">":"</span> <span class="token operator">+</span> trKey<span class="token punctuation">.</span><span class="token function">getGroup</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token class-name">JobDataMap</span> dataMap <span class="token operator">=</span> jobExecutionContext<span class="token punctuation">.</span><span class="token function">getJobDetail</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getJobDataMap</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">JobDataMap</span> tdataMap <span class="token operator">=</span> jobExecutionContext<span class="token punctuation">.</span><span class="token function">getTrigger</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getJobDataMap</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">String</span> jobMsg <span class="token operator">=</span> dataMap<span class="token punctuation">.</span><span class="token function">getString</span><span class="token punctuation">(</span><span class="token string">"message"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">Float</span> jobFloatValue <span class="token operator">=</span> dataMap<span class="token punctuation">.</span><span class="token function">getFloat</span><span class="token punctuation">(</span><span class="token string">"FloatJobValue"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">String</span> triggerMsg <span class="token operator">=</span> tdataMap<span class="token punctuation">.</span><span class="token function">getString</span><span class="token punctuation">(</span><span class="token string">"message"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">Double</span> triggerDoubleValue <span class="token operator">=</span> tdataMap<span class="token punctuation">.</span><span class="token function">getDoubleValue</span><span class="token punctuation">(</span><span class="token string">"DoubleTriggerValue"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"JobMsg is "</span> <span class="token operator">+</span> jobMsg<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"JobFloatValue is "</span> <span class="token operator">+</span> jobFloatValue<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"TriggerMsg is "</span> <span class="token operator">+</span> triggerMsg<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"TriggerDoubleValue is "</span> <span class="token operator">+</span> triggerDoubleValue<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>也可以用getMergedJobDataMap()获取两个</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">HelloJob</span> <span class="token keyword">implements</span> <span class="token class-name">Job</span> <span class="token punctuation">{</span>
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">execute</span><span class="token punctuation">(</span><span class="token class-name">JobExecutionContext</span> jobExecutionContext<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">JobExecutionException</span> <span class="token punctuation">{</span>
+
+        <span class="token comment">// 打印当前的执行时间，格式为2017-01-01 00：00：00</span>
+        <span class="token class-name">Date</span> date <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Date</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">SimpleDateFormat</span> sf <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">SimpleDateFormat</span><span class="token punctuation">(</span><span class="token string">"yyyy-MM-dd HH:mm:ss"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"Current Exec Time Is:"</span> <span class="token operator">+</span> sf<span class="token punctuation">.</span><span class="token function">format</span><span class="token punctuation">(</span>date<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// 编写具体的业务逻辑</span>
+        <span class="token class-name">JobKey</span> key <span class="token operator">=</span> jobExecutionContext<span class="token punctuation">.</span><span class="token function">getJobDetail</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getKey</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"My Name And Group Are "</span> <span class="token operator">+</span> key<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">":"</span> <span class="token operator">+</span> key<span class="token punctuation">.</span><span class="token function">getGroup</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token class-name">TriggerKey</span> trKey <span class="token operator">=</span> jobExecutionContext<span class="token punctuation">.</span><span class="token function">getTrigger</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getKey</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"My Trigger And Group Are "</span> <span class="token operator">+</span> trKey<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">":"</span> <span class="token operator">+</span> trKey<span class="token punctuation">.</span><span class="token function">getGroup</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token class-name">JobDataMap</span> dataMap <span class="token operator">=</span> jobExecutionContext<span class="token punctuation">.</span><span class="token function">getMergedJobDataMap</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">String</span> msg <span class="token operator">=</span> dataMap<span class="token punctuation">.</span><span class="token function">getString</span><span class="token punctuation">(</span><span class="token string">"message"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">Float</span> jobFloatValue <span class="token operator">=</span> dataMap<span class="token punctuation">.</span><span class="token function">getFloat</span><span class="token punctuation">(</span><span class="token string">"FloatJobValue"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">Double</span> triggerDoubleValue <span class="token operator">=</span> dataMap<span class="token punctuation">.</span><span class="token function">getDoubleValue</span><span class="token punctuation">(</span><span class="token string">"DoubleTriggerValue"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"Msg is "</span> <span class="token operator">+</span> msg<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"JobFloatValue is "</span> <span class="token operator">+</span> jobFloatValue<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"TriggerDoubleValue is "</span> <span class="token operator">+</span> triggerDoubleValue<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<ul>
+<li>Job实现类中添加setter方法对应JobDataMap的键值（Quartz框架默认的JobFactory实现类在初始化Job实例对象时会自动的调用这些setter方法）</li>
+</ul>
+<p><strong>Job</strong></p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Data</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">HelloJob</span> <span class="token keyword">implements</span> <span class="token class-name">Job</span> <span class="token punctuation">{</span>
+
+    <span class="token keyword">private</span> <span class="token class-name">String</span> message<span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token class-name">Float</span> <span class="token class-name">FloatJobValue</span><span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token class-name">Double</span> <span class="token class-name">DoubleTriggerValue</span><span class="token punctuation">;</span>
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">execute</span><span class="token punctuation">(</span><span class="token class-name">JobExecutionContext</span> jobExecutionContext<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">JobExecutionException</span> <span class="token punctuation">{</span>
+
+        <span class="token comment">// 打印当前的执行时间，格式为2017-01-01 00：00：00</span>
+        <span class="token class-name">Date</span> date <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Date</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">SimpleDateFormat</span> sf <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">SimpleDateFormat</span><span class="token punctuation">(</span><span class="token string">"yyyy-MM-dd HH:mm:ss"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"Current Exec Time Is:"</span> <span class="token operator">+</span> sf<span class="token punctuation">.</span><span class="token function">format</span><span class="token punctuation">(</span>date<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// 编写具体的业务逻辑</span>
+        <span class="token class-name">JobKey</span> key <span class="token operator">=</span> jobExecutionContext<span class="token punctuation">.</span><span class="token function">getJobDetail</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getKey</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"My Name And Group Are "</span> <span class="token operator">+</span> key<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">":"</span> <span class="token operator">+</span> key<span class="token punctuation">.</span><span class="token function">getGroup</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token class-name">TriggerKey</span> trKey <span class="token operator">=</span> jobExecutionContext<span class="token punctuation">.</span><span class="token function">getTrigger</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getKey</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"My Trigger And Group Are "</span> <span class="token operator">+</span> trKey<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">":"</span> <span class="token operator">+</span> trKey<span class="token punctuation">.</span><span class="token function">getGroup</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// JobDataMap dataMap = jobExecutionContext.getMergedJobDataMap();</span>
+
+        <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"Msg is "</span> <span class="token operator">+</span> message<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"JobFloatValue is "</span> <span class="token operator">+</span> <span class="token class-name">FloatJobValue</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"TriggerDoubleValue is "</span> <span class="token operator">+</span> <span class="token class-name">DoubleTriggerValue</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<hr>
+<h2 id="Trigger"><a href="#Trigger" class="headerlink" title="Trigger"></a>Trigger</h2><h3 id="Trigger是什么"><a href="#Trigger是什么" class="headerlink" title="Trigger是什么"></a>Trigger是什么</h3><p>Quartz中的触发器是用来告诉调度程序作业什么时候触发。</p>
+<p>即Trigger对象是用来触发Job的。</p>
+<h3 id="触发器的通用属性"><a href="#触发器的通用属性" class="headerlink" title="触发器的通用属性"></a>触发器的通用属性</h3><ul>
+<li>JobKey : 表示job实例的标识，触发器被触发时，该指定的job实例会执行</li>
+<li>StartTime : 表示触发器的时间表<strong>首次被触发的时间</strong>。它的值的类型是Java.util.Date</li>
+<li>EndTime : 指定触发器的<strong>不再被触发</strong>的时间。它的值的类型是Java.util.Date</li>
+</ul>
+<hr>
+<h2 id="SimpleTrigger"><a href="#SimpleTrigger" class="headerlink" title="SimpleTrigger"></a>SimpleTrigger</h2><h3 id="SimpleTrigger的作用"><a href="#SimpleTrigger的作用" class="headerlink" title="SimpleTrigger的作用"></a>SimpleTrigger的作用</h3><p>在一个<strong>指定时间段</strong>内<strong>执行一次</strong>作业任务</p>
+<p>或是在<strong>指定的时间间隔</strong>内<strong>多次执行</strong>作业任务</p>
+<h3 id="需要注意的点"><a href="#需要注意的点" class="headerlink" title="需要注意的点"></a>需要注意的点</h3><ul>
+<li>重复次数可以为<strong>0，正整数</strong>或是<strong>SimpleTrigger.REPEAT_INDEFINITELY</strong>常量值</li>
+<li>重复执行间隔必须为<strong>0或长整数</strong></li>
+<li>一旦被指定了endTime参数，那么它会<strong>覆盖重复次数参数</strong>的效果</li>
+</ul>
+<hr>
+<h2 id="CronTrigger"><a href="#CronTrigger" class="headerlink" title="CronTrigger"></a>CronTrigger</h2><h3 id="CronTrigger的作用"><a href="#CronTrigger的作用" class="headerlink" title="CronTrigger的作用"></a>CronTrigger的作用</h3><p><strong>基于日历</strong>的<strong>作业调度器</strong>，而不是像SimpleTrigger那样精确指定间隔时间，比SimpleTrigger更常用。</p>
+<h3 id="Cron表达式"><a href="#Cron表达式" class="headerlink" title="Cron表达式"></a>Cron表达式</h3><p>用于<strong>配置CronTrigger</strong>实例。</p>
+<p>是由7个子表达式组成的字符串，描述了时间表的详细信息。</p>
+<p>格式：[秒] [分] [小时] [日] [月] [周] [年]</p>
+<h3 id="Cron表达式特殊字符意义对应表"><a href="#Cron表达式特殊字符意义对应表" class="headerlink" title="Cron表达式特殊字符意义对应表"></a>Cron表达式特殊字符意义对应表</h3><table>
+<thead>
+<tr>
+<th>字段</th>
+<th>是否必填</th>
+<th>允许值</th>
+<th>允许的特殊字符</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>秒</td>
+<td>是</td>
+<td>0~59</td>
+<td>, - * /</td>
+</tr>
+<tr>
+<td>分</td>
+<td>是</td>
+<td>0~59</td>
+<td>, - * /</td>
+</tr>
+<tr>
+<td>小时</td>
+<td>是</td>
+<td>0~23</td>
+<td>, - * /</td>
+</tr>
+<tr>
+<td>日</td>
+<td>是</td>
+<td>1~31</td>
+<td>, - * ? / L W C</td>
+</tr>
+<tr>
+<td>月</td>
+<td>是</td>
+<td>1~12或者JAN_DEC</td>
+<td>, - * /</td>
+</tr>
+<tr>
+<td>周</td>
+<td>是</td>
+<td>1~7或者SUN_SAT</td>
+<td>, - * ? / L C #</td>
+</tr>
+<tr>
+<td>年</td>
+<td>否</td>
+<td>empty，1970~2099</td>
+<td>, - * /</td>
+</tr>
+</tbody></table>
+<h3 id="Cron表达式举例"><a href="#Cron表达式举例" class="headerlink" title="Cron表达式举例"></a>Cron表达式举例</h3><table>
+<thead>
+<tr>
+<th>表达式</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0 15 10 ? * *</td>
+<td>每天10点15分触发</td>
+</tr>
+<tr>
+<td>0 0/5 14 * * ?</td>
+<td>每天下午的2点到2点59分（整点开始，每隔5分触发）</td>
+</tr>
+<tr>
+<td>0 15 10 ? * MON_FRI</td>
+<td>从周一到周五每天上午的10点15分触发</td>
+</tr>
+<tr>
+<td>0 15 10 ? * 6#3</td>
+<td>每月的第三周的星期五开始触发</td>
+</tr>
+<tr>
+<td>0 15 10 ? * 6L 2016-2017</td>
+<td>从2016年到2017年每月最后一周的星期五10点15分触发</td>
+</tr>
+</tbody></table>
+<h3 id="Cron表达式小提示"><a href="#Cron表达式小提示" class="headerlink" title="Cron表达式小提示"></a>Cron表达式小提示</h3><ul>
+<li>L和W可以组合使用</li>
+<li>周字段英文字母不区分大小写即MON与mon相同</li>
+<li>利用工具，在线生成</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Quartz学习笔记</category>
+      </categories>
+      <tags>
+        <tag>Quartz</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>LeetCode 72.编辑距离</title>
     <url>/2021/06/25/leetcode-72.bian-ji-ju-chi/</url>
     <content><![CDATA[<h1 id="编辑距离"><a href="#编辑距离" class="headerlink" title="编辑距离"></a>编辑距离</h1><hr>
