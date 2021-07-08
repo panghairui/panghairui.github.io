@@ -826,6 +826,63 @@
       </tags>
   </entry>
   <entry>
+    <title>Java内存模型学习笔记</title>
+    <url>/2021/07/07/java-nei-cun-mo-xing-xue-xi/</url>
+    <content><![CDATA[<h1 id="深入浅出Java内存模型"><a href="#深入浅出Java内存模型" class="headerlink" title="深入浅出Java内存模型"></a>深入浅出Java内存模型</h1><hr>
+<h2 id="Java内存模型主要内容"><a href="#Java内存模型主要内容" class="headerlink" title="Java内存模型主要内容"></a>Java内存模型主要内容</h2><ul>
+<li>Java内存模型的抽象结构</li>
+<li>happen-before规则</li>
+<li>对volatile内存语义的探讨</li>
+</ul>
+<hr>
+<h2 id="Java内存模型的抽象结构"><a href="#Java内存模型的抽象结构" class="headerlink" title="Java内存模型的抽象结构"></a>Java内存模型的抽象结构</h2><p>Java内存模型定义了Java线程对内存数据进行交互的规范</p>
+<p>线程之间的<strong>共享变量</strong>存储在<strong>主内存</strong>中，每个线程都有自己私有的<strong>本地内存</strong>，<strong>本地内存</strong>存储了该线程以读/写共享变量的副本。</p>
+<p>本地内存是Java内存模型的抽象概念，并不是真实存在的。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/panghairui/image-hosting@master/panghairui-blog/image.5t4o77nwzec0.png"></p>
+<p>Java内存模型规定了：线程对变量的所有操作都必须在<strong>本地内存</strong>进行，<strong>不能直接读写主内存</strong>的变量。</p>
+<p>Java内存模型定义了8种操作来完成<strong>变量如何从主内存到本地内存，以及变量如何从本地内存到主内存</strong></p>
+<p>分别是read/load/use/assign/store/write/lock/unlock操作</p>
+<p><img src="https://cdn.jsdelivr.net/gh/panghairui/image-hosting@master/panghairui-blog/image.2c6jhavq4lwk.png"></p>
+<hr>
+<h2 id="happen-before"><a href="#happen-before" class="headerlink" title="happen-before"></a>happen-before</h2><p>Happen-before实际上是一套<strong>规则</strong>。Java内存模型定义了这套规则，目的是为了阐述操作之间的内存<strong>可见性</strong></p>
+<p>CPU和编译器层面上都有指令重排的问题</p>
+<p>指令重排虽然是能提高运行的效率，但在并发编程中，我们在兼顾<strong>效率</strong>的前提下，还希望<strong>程序结果</strong>能由我们掌控。</p>
+<p>说白了就是，在某些重要的场景下，这一组操作都不能进行重排序，<strong>前面一个操作的结果对后续操作必须是可见的。</strong></p>
+<p>于是，Java内存模型就提出了happen-before这套规则，规则总共有8条</p>
+<p>比如传递性、volatile变量规则、程序顺序规则、监视器锁的规则。。。</p>
+<p>只要记住，有了happen-before这些规则，我们写的代码只要在这些规则下，前一个操作的结果对后续操作是可见的，是不会发生重排序的。</p>
+<hr>
+<h2 id="Volatile"><a href="#Volatile" class="headerlink" title="Volatile"></a>Volatile</h2><p>volatile就是Java的一个关键字</p>
+<p>为什么讲Java内存模型往往就会讲到volatile，就是因为它的特性：可见行和有序性</p>
+<p>Java内存模型这个规范，很大程度下就是为了解决可见行和有序性的问题。</p>
+<p>Java内存模型为了实现volatile有序性和可见行，定义了4种内存屏障的<strong>规范</strong>，分别是LoadLoad/LoadStore/StoreLoad/StoreStore</p>
+<p>说白了，就是在volatile<strong>前后</strong>加上<strong>内存屏障</strong>，使得编译器和CPU无法进行重排序，致使有序，并且写volatile变量对其他线程可见。</p>
+<hr>
+<h2 id="Java虚拟机对内存模型的实现"><a href="#Java虚拟机对内存模型的实现" class="headerlink" title="Java虚拟机对内存模型的实现"></a>Java虚拟机对内存模型的实现</h2><p>Java内存模型定义了规范，Java虚拟机就得实现。</p>
+<p>Hotspot虚拟机的实现，在<strong>汇编</strong>层面上实际是通过Lock前缀指令来实现的，而不是各种fence指令（主要原因就是简便。因为大部分平台都支持lock指令，而fence指令是x86平台的）</p>
+<p>lock指令能保证：禁止CPU和编译器的重排序（保证了有序性）、保证CPU写核心的指令可以立即生效且其他核心的缓存数据失效（保证了可见行）。</p>
+<h2 id="volatile和MESI协议啥关系"><a href="#volatile和MESI协议啥关系" class="headerlink" title="volatile和MESI协议啥关系"></a>volatile和MESI协议啥关系</h2><p>并没有直接关联</p>
+<p>Java内存模型关注的是编程语言层面上，它是高维度的抽象。</p>
+<p>MESI是CPU缓存一致性协议，不同的CPU架构都不一样，可能有的CPU压根就没有MESI协议。。。</p>
+<p>只不过MESI名声比较大，大家都拿它举例子。</p>
+<p>MESI只是在<strong>特定场景下</strong>为实现volatile的可见行/有序性而使用到的一部分罢了。</p>
+<p>为了让Java程序员屏蔽上面这些底层知识，happen-before原则中就有对volatile的定义：对一个volatile变量的写操作相对于后续对这个变量的读操作可见。</p>
+<p>通过happen-before规则规定：只要变量声明了volatile关键字，写后再读，读必须可见写的值。（可见性，有序性）</p>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p><strong>为什么存在Java内存模型</strong>：Java为了屏蔽硬件和操作系统访问内存的各种差异，提出了「Java内存模型」的规范，保证了Java程序在各种平台下对内存的访问都能得到一致效果</p>
+<p><strong>Java内存模型抽象结构</strong>：线程之间的「共享变量」存储在「主内存」中，每个线程都有自己私有的「本地内存」，「本地内存」存储了该线程以读/写共享变量的副本。线程对变量的所有操作都必须在「本地内存」进行，而「不能直接读写主内存」的变量</p>
+<p><strong>happen-before规则</strong>：Java内存模型规定在某些场景下（一共8条），前面一个操作的结果对后续操作必须是可见的。这8条规则成为happen-before规则</p>
+<p><strong>volatile</strong>：volatile是Java的关键字，修饰的变量是可见性且有序的（不会被重排序）。可见性&amp;&amp;有序性由Java内存模型定义的「内存屏障」完成，实际HotSpot虚拟机实现Java内存模型规范，汇编底层是通过Lock指令来实现。</p>
+]]></content>
+      <categories>
+        <category>Java学习笔记</category>
+      </categories>
+      <tags>
+        <tag>Java</tag>
+        <tag>Java内存模型</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Quartz学习笔记</title>
     <url>/2021/07/05/quartz-xue-xi/</url>
     <content><![CDATA[<h1 id="Quartz学习笔记"><a href="#Quartz学习笔记" class="headerlink" title="Quartz学习笔记"></a>Quartz学习笔记</h1><hr>
