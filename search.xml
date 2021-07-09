@@ -826,6 +826,110 @@
       </tags>
   </entry>
   <entry>
+    <title>WebMagic + 无头浏览器</title>
+    <url>/2021/07/09/webmagic-wu-tou-liu-lan-qi/</url>
+    <content><![CDATA[<h1 id="WebMagic-无头浏览器"><a href="#WebMagic-无头浏览器" class="headerlink" title="WebMagic + 无头浏览器"></a>WebMagic + 无头浏览器</h1><hr>
+<h2 id="WebMagic学习"><a href="#WebMagic学习" class="headerlink" title="WebMagic学习"></a>WebMagic学习</h2><h3 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h3><p>WebMagic项目代码分为核心和扩展两部分。</p>
+<p>核心部分主要是精简的爬虫实现。（提供简单灵活的Api）</p>
+<p>扩展部分主要是一些便利、实用性的功能。（例如注解模式编写爬虫）</p>
+<h3 id="微内核和高可扩展性"><a href="#微内核和高可扩展性" class="headerlink" title="微内核和高可扩展性"></a>微内核和高可扩展性</h3><p>WebMagic由四个组件（Downloader、PageProcessor、Scheduler、Pipeline）构成，主要是将这些组件结合并完成多线程的任务。</p>
+<p>这样，就可以对爬虫功能做定制</p>
+<h3 id="总体架构"><a href="#总体架构" class="headerlink" title="总体架构"></a>总体架构</h3><p>WebMagic主要是由上面的四个组件组成并由Spider将它们彼此组织起来。</p>
+<p>Spider是一个大的容器，它也是WebMagic逻辑的核心。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/panghairui/image-hosting@master/panghairui-blog/image.5os44cheh780.png"></p>
+<h3 id="WebMagic的四个组件"><a href="#WebMagic的四个组件" class="headerlink" title="WebMagic的四个组件"></a>WebMagic的四个组件</h3><ul>
+<li>Downloader : 负责从互联网上下载页面，WebMagic默认使用了<a href="http://hc.apache.org/index.html">Apache HttpClient</a>作为下载工具。</li>
+<li>PageProcessor : 负责解析页面，抽取有用信息，以及发现新的链接。WebMagic使用<a href="http://jsoup.org/">Jsoup</a>作为HTML解析工具，并基于其开发了解析XPath的工具<a href="https://github.com/code4craft/xsoup">Xsoup</a>。</li>
+<li>Scheduler : 负责管理待抓取的URL，以及一些去重的工作。WebMagic默认提供了JDK的内存队列来管理URL，并用集合来进行去重。也支持使用Redis进行分布式管理。</li>
+<li>Pipeline : 负责抽取结果的处理，包括计算、持久化到文件、数据库等。WebMagic默认提供了“输出到控制台”和“保存到文件”两种结果处理方案。</li>
+</ul>
+<blockquote>
+<p>PageProcessor对于每个站点每个页面都不一样，是需要使用者定制的部分</p>
+<p>除非项目有一些特殊的分布式需求，否则无需自己定制Scheduler</p>
+<p>Pipeline定义了结果保存的方式，如果你要保存到指定数据库，则需要编写对应的Pipeline，对于一类需求一般只编写一个Pipeline</p>
+</blockquote>
+<h3 id="用于数据流流转的对象"><a href="#用于数据流流转的对象" class="headerlink" title="用于数据流流转的对象"></a>用于数据流流转的对象</h3><blockquote>
+<p>Request</p>
+</blockquote>
+<p>是对URL地址的一层封装，一个Request对应一个URL地址。</p>
+<p>它是PageProcessor与Downloader交互的载体，也是PageProcessor控制Downloader唯一方式。</p>
+<p>除了URL本身外，它还包含一个Key-Value结构的字段<code>extra</code>。你可以在extra中保存一些特殊的属性，然后在其他地方读取，以完成不同的功能。例如附加上一个页面的一些信息等。</p>
+<blockquote>
+<p>Page</p>
+</blockquote>
+<p><code>Page</code>代表了从Downloader下载到的一个页面——可能是HTML，也可能是JSON或者其他文本格式的内容。</p>
+<p>Page是WebMagic抽取过程的核心对象，它提供一些方法可供抽取、结果保存等。</p>
+<blockquote>
+<p>ResultItems</p>
+</blockquote>
+<p><code>ResultItems</code>相当于一个Map，它保存PageProcessor处理的结果，供Pipeline使用。它的API与Map很类似，值得注意的是它有一个字段<code>skip</code>，若设置为true，则不应被Pipeline处理。</p>
+<h3 id="控制爬虫运转的引擎–Spider"><a href="#控制爬虫运转的引擎–Spider" class="headerlink" title="控制爬虫运转的引擎–Spider"></a>控制爬虫运转的引擎–Spider</h3><p>Spider是WebMagic内部流程的核心。上述的四个组件，都是Spider的一个属性，这些属性是可以自由设置的，通过设置这个属性可以实现不同的功能。</p>
+<p>Spider也是WebMagic操作的入口，它封装了爬虫的创建、启动、停止、多线程等功能。</p>
+<blockquote>
+<p>设置各个组件，并且设置多线程和启动的例子</p>
+</blockquote>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token class-name">Spider</span><span class="token punctuation">.</span><span class="token function">create</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">GithubRepoPageProcessor</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+            <span class="token comment">//从https://github.com/code4craft开始抓    </span>
+            <span class="token punctuation">.</span><span class="token function">addUrl</span><span class="token punctuation">(</span><span class="token string">"https://github.com/code4craft"</span><span class="token punctuation">)</span>
+            <span class="token comment">//设置Scheduler，使用Redis来管理URL队列</span>
+            <span class="token punctuation">.</span><span class="token function">setScheduler</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">RedisScheduler</span><span class="token punctuation">(</span><span class="token string">"localhost"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+            <span class="token comment">//设置Pipeline，将结果以json方式保存到文件</span>
+            <span class="token punctuation">.</span><span class="token function">addPipeline</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">JsonFilePipeline</span><span class="token punctuation">(</span><span class="token string">"D:\\data\\webmagic"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+            <span class="token comment">//开启5个线程同时执行</span>
+            <span class="token punctuation">.</span><span class="token function">thread</span><span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">)</span>
+            <span class="token comment">//启动爬虫</span>
+            <span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<hr>
+<h2 id="无头浏览器"><a href="#无头浏览器" class="headerlink" title="无头浏览器"></a>无头浏览器</h2><h3 id="概览-1"><a href="#概览-1" class="headerlink" title="概览"></a>概览</h3><p>无头浏览器节省了GUI所必须消耗的大量内存，给多线程、进程并行提供了方便。而爬虫碰到需要运行js代码时，又必须借助运行js的工具：浏览器。</p>
+<blockquote>
+<p>常用的无头浏览器</p>
+</blockquote>
+<p>PhantomJS : 基于QtWebkit的无头浏览器，开发语言是JavaScript。</p>
+<p>SlimerJS : 基于Gecko的无头浏览器，SlimerJS和PhantomJS基本兼容，就是一个内核换成了Gecko的PhantomJS。</p>
+<p>HtmlUnit : 纯Java开发的无头浏览器，完全Java开发，Javascript引擎使用的是Rhnio，由于不是基于Webkit、Gecko等主流内核开发，兼容性不好。</p>
+<h3 id="技术选型"><a href="#技术选型" class="headerlink" title="技术选型"></a>技术选型</h3><p><strong>PhantomJS</strong></p>
+<p>爽点：目前使用最广泛，最被认可的无头浏览器。由于采用的是Webkit内核，因此和Safari，Chrome等浏览器兼容性十分好。</p>
+<p>痛点：和Java结合使用比较麻烦，主要还是调用phantomjs执行。</p>
+<p>安装：<a href="http://phantomjs.org/download.html">http://phantomjs.org/download.html</a></p>
+<p><strong>HtmlUnit</strong></p>
+<p>爽点：HtmlUnit是一款纯java开发的无头浏览器。</p>
+<p>痛点：他既没有用weibkit内核，也没用gecko内核，其dom解析、css解析、javascript解析都是纯java开发的，因此其兼容性不太理想。目前HtmlUnit的最新版本的javascript引擎使用的是一款很老的叫做Rhnio的引擎，不管在效率和兼容性上都不理想。</p>
+<blockquote>
+<p>个人认为，使用业界最受认可的无头浏览器好一点。也不会为兼容性发愁。</p>
+</blockquote>
+<h3 id="PhantomJS入门"><a href="#PhantomJS入门" class="headerlink" title="PhantomJS入门"></a>PhantomJS入门</h3><p><strong>PhantomJS核心API</strong></p>
+<ul>
+<li>webpage : 它的作用主要是提供了一套可以访问和操作web文档的核心方法，包括操作DOM、事件捕获、用户事件模拟等等。</li>
+<li>system : 该模块提供了一些与操作系统相关的接口，例如访问操作系统信息、访问系统环境变量、事件捕获、用户事件模拟等等。</li>
+<li>fs : 即FIleSystem。提供了执行文件I/O操作的标准接口，如读写文件、删除文件等。它使得持久化一些文件变得非常容易。</li>
+<li>webserver : 可以实现自己的webserver，用来处理请求并执行PhantomJS代码。</li>
+</ul>
+<p><strong>其他命令</strong></p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># 配置信息执行PhantomJS命令格式如下</span>
+phantomjs <span class="token punctuation">[</span>switches<span class="token punctuation">]</span> <span class="token punctuation">[</span>options<span class="token punctuation">]</span> <span class="token punctuation">[</span>script<span class="token punctuation">]</span> <span class="token punctuation">[</span>argument <span class="token punctuation">[</span>argument <span class="token punctuation">[</span><span class="token punctuation">..</span>.<span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">]</span>
+
+<span class="token comment"># 打开debug模式</span>
+phantomjs --debug<span class="token operator">=</span>yes demo.js
+
+<span class="token comment"># 设置cookie路径</span>
+phantomjs --cookie-file<span class="token operator">=</span>cookie.txt demo.js<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+]]></content>
+      <categories>
+        <category>工作学习笔记</category>
+      </categories>
+      <tags>
+        <tag>爬虫相关</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Java内存模型学习笔记</title>
     <url>/2021/07/07/java-nei-cun-mo-xing-xue-xi/</url>
     <content><![CDATA[<h1 id="深入浅出Java内存模型"><a href="#深入浅出Java内存模型" class="headerlink" title="深入浅出Java内存模型"></a>深入浅出Java内存模型</h1><hr>
