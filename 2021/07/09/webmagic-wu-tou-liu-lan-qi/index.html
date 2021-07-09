@@ -404,14 +404,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    1.4k
+                    1.8k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    5 分
+                    6 分
                 </div>
                 
 
@@ -434,7 +434,8 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h1 id="WebMagic-无头浏览器"><a href="#WebMagic-无头浏览器" class="headerlink" title="WebMagic + 无头浏览器"></a>WebMagic + 无头浏览器</h1><hr>
+                <p>[TOC]</p>
+<h1 id="WebMagic-Selenium-无头浏览器"><a href="#WebMagic-Selenium-无头浏览器" class="headerlink" title="WebMagic + Selenium + 无头浏览器"></a>WebMagic + Selenium + 无头浏览器</h1><hr>
 <h2 id="WebMagic学习"><a href="#WebMagic学习" class="headerlink" title="WebMagic学习"></a>WebMagic学习</h2><h3 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h3><p>WebMagic项目代码分为核心和扩展两部分。</p>
 <p>核心部分主要是精简的爬虫实现。（提供简单灵活的Api）</p>
 <p>扩展部分主要是一些便利、实用性的功能。（例如注解模式编写爬虫）</p>
@@ -489,7 +490,27 @@
 <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <hr>
-<h2 id="无头浏览器"><a href="#无头浏览器" class="headerlink" title="无头浏览器"></a>无头浏览器</h2><h3 id="概览-1"><a href="#概览-1" class="headerlink" title="概览"></a>概览</h3><p>无头浏览器节省了GUI所必须消耗的大量内存，给多线程、进程并行提供了方便。而爬虫碰到需要运行js代码时，又必须借助运行js的工具：浏览器。</p>
+<h2 id="Selenium框架"><a href="#Selenium框架" class="headerlink" title="Selenium框架"></a>Selenium框架</h2><h3 id="概览-1"><a href="#概览-1" class="headerlink" title="概览"></a>概览</h3><p>Selenium是目前用的最广泛的Web UI自动化测试框架，祖传爬虫利器。</p>
+<p>一些网页，比如微博，只有在登录状态才能进行页面的访问，或者对数据有比较复杂的验证和保护，直接通过网络请求进行登录并获取数据就会比较麻烦。这种时候，就该本篇的主角 selenium 上场了。</p>
+<p>Selenium 是一个用于 Web 应用程序测试的工具。它的优点在于，浏览器能打开的页面，使用 selenium 就一定能获取到。但 selenium 也有其局限性，相对于脚本方式，selenium 获取内容的效率不高。</p>
+<h3 id="基本使用方法"><a href="#基本使用方法" class="headerlink" title="基本使用方法"></a>基本使用方法</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">from selenium <span class="token function">import</span> webdriver
+
+<span class="token comment"># 调用Chrome浏览器</span>
+driver <span class="token operator">=</span> webdriver.Chrome<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+<span class="token comment"># 转到百度首页</span>
+driver.get<span class="token punctuation">(</span><span class="token string">'http://www.baidu.com'</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>使用 PhantomJS 时 : </p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">deriver <span class="token operator">=</span> webdriver.PhantomJS<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="Selenium获取Cookies"><a href="#Selenium获取Cookies" class="headerlink" title="Selenium获取Cookies"></a>Selenium获取Cookies</h3><p>在反爬领域中，常常使用selenium获取cookies应付反爬虫</p>
+<p>比如，爬取微博内容，需要登录状态，而保存的cookie会在一定时间后失效，这时候se lenium就可以使用预先设置好的账号密码登陆，然后获取cookies发送给脚本使用。</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># 获取cookie 以百度为例</span>
+cookie_r <span class="token operator">=</span> driver.get_cookies<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<hr>
+<h2 id="无头浏览器"><a href="#无头浏览器" class="headerlink" title="无头浏览器"></a>无头浏览器</h2><h3 id="概览-2"><a href="#概览-2" class="headerlink" title="概览"></a>概览</h3><p>无头浏览器节省了GUI所必须消耗的大量内存，给多线程、进程并行提供了方便。而爬虫碰到需要运行js代码时，又必须借助运行js的工具：浏览器。</p>
 <blockquote>
 <p>常用的无头浏览器</p>
 </blockquote>
@@ -504,7 +525,7 @@
 <p>爽点：HtmlUnit是一款纯java开发的无头浏览器。</p>
 <p>痛点：他既没有用weibkit内核，也没用gecko内核，其dom解析、css解析、javascript解析都是纯java开发的，因此其兼容性不太理想。目前HtmlUnit的最新版本的javascript引擎使用的是一款很老的叫做Rhnio的引擎，不管在效率和兼容性上都不理想。</p>
 <blockquote>
-<p>个人认为，使用业界最受认可的无头浏览器好一点。也不会为兼容性发愁。</p>
+<p>个人认为，使用业界最受认可的无头浏览器好一点。同时也不会为兼容性发愁。</p>
 </blockquote>
 <h3 id="PhantomJS入门"><a href="#PhantomJS入门" class="headerlink" title="PhantomJS入门"></a>PhantomJS入门</h3><p><strong>PhantomJS核心API</strong></p>
 <ul>
@@ -523,10 +544,10 @@ phantomjs --debug<span class="token operator">=</span>yes demo.js
 <span class="token comment"># 设置cookie路径</span>
 phantomjs --cookie-file<span class="token operator">=</span>cookie.txt demo.js<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-
-
-
-
+<hr>
+<h2 id="爬虫案例"><a href="#爬虫案例" class="headerlink" title="爬虫案例"></a>爬虫案例</h2><p><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000008194764">抓取淘宝店铺及猫眼数据</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/null-qige/p/7844381.html">抓取淘宝搜索页面</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/sd4000784/article/details/99618640">抓取房源信息内容网站</a></p>
 
                 
             </div>
