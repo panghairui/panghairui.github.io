@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="JVM内存结构, 算法，开发，编程，数据结构">
+    <meta name="keywords" content="动态规划学习-从暴力递归到动态规划, 算法，开发，编程，数据结构">
     <meta name="description" content="算法与编程之美">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>JVM内存结构 | 海的博客</title>
+    <title>动态规划学习-从暴力递归到动态规划 | 海的博客</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -249,12 +249,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/panghairui/image-hosting@master/panghairui-blog/792a4b6934fc491b81342206e3192e59.6tvfr7rcbv40.png')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/panghairui/image-hosting@master/panghairui-blog/cd64ff94880411ebb6edd017c2d2eca2.5xt8qf6vm4g0.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">JVM内存结构</h1>
+                    <h1 class="description center-align post-title">动态规划学习-从暴力递归到动态规划</h1>
                 </div>
             </div>
         </div>
@@ -370,12 +370,12 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/Java/">
-                                <span class="chip bg-color">Java</span>
+                            <a href="/tags/%E7%AE%97%E6%B3%95/">
+                                <span class="chip bg-color">算法</span>
                             </a>
                         
-                            <a href="/tags/JVM/">
-                                <span class="chip bg-color">JVM</span>
+                            <a href="/tags/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/">
+                                <span class="chip bg-color">动态规划</span>
                             </a>
                         
                     </div>
@@ -386,8 +386,8 @@
                     <div class="post-cate">
                         <i class="fas fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="post-category">
-                                Java学习笔记
+                            <a href="/categories/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="post-category">
+                                动态规划学习笔记
                             </a>
                         
                     </div>
@@ -399,7 +399,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2021-07-09
+                    2021-07-10
                 </div>
                 
 
@@ -408,14 +408,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    1.2k
+                    1.8k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    4 分
+                    7 分
                 </div>
                 
 
@@ -438,52 +438,149 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h1 id="JVM内存结构学习笔记"><a href="#JVM内存结构学习笔记" class="headerlink" title="JVM内存结构学习笔记"></a>JVM内存结构学习笔记</h1><hr>
-<h2 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h2><p>class文件会被类加载器装载到JVM中，并且JVM会负责程序<strong>运行时</strong>的<strong>内存管理</strong></p>
-<p>而JVM的内存结构，往往指的就是JVM定义的<strong>运行时数据区</strong></p>
+                <h1 id="动态规划学习-从暴力递归到动态规划"><a href="#动态规划学习-从暴力递归到动态规划" class="headerlink" title="动态规划学习-从暴力递归到动态规划"></a>动态规划学习-从暴力递归到动态规划</h1><hr>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>我依旧记忆犹新的一件事，也是我大学生涯的一大遗憾。</p>
+<p>第十四届吉林省大学生程序设计竞赛，我们队作为参赛队伍，在比赛前期零罚时且过题速度极快，冲到了榜单第三的位置，记得第一是吉大一队，第二是东师的队伍。</p>
+<p>当时心里想的是“省一稳了”，但是却没想到，最后被一道题硬生生卡死，错失省一。即使是到最后一个小时的时候，我们把这题过了，也能冲到省一末的名次（主要是我们队的罚时是真的短），但是直到最后，绞尽脑汁，也无法通过那道题。</p>
+<p>而那道题，就是一道动态规划。</p>
+<p>动态规划题目一直以来，都是我的噩梦。像是KMP，最短路，最小生成树，并查集，线段树这些算法，只要理解算法思想，一般就是套模版去应用就可以了。但是动态规划，我一直没能理解思想，因为动态规划太“动态”了，每个题目都有不同的状态转移方程。</p>
+<p>但是逃避不是解决问题的方式。</p>
+<p>所以我打算从头到尾，把动态规划的常见套路和常见习题，全过一遍，掌握动态规划的核心思想，从头到尾，记录博客学习。</p>
 <hr>
-<h2 id="运行时数据区"><a href="#运行时数据区" class="headerlink" title="运行时数据区"></a>运行时数据区</h2><p>分为五大块：方法区、堆、程序计数器、虚拟机栈、本地方法栈。</p>
-<p>这是JVM<strong>规范</strong>的分区概念，到具体的实际落地，不同的厂商实现可能是有所区别的。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/panghairui/image-hosting@master/panghairui-blog/image.7jauvc56vhw0.png"></p>
-<hr>
-<h2 id="程序计数器"><a href="#程序计数器" class="headerlink" title="程序计数器"></a>程序计数器</h2><p>Java是多线程语言，假设线程数大于CPU数，就很有可能有<strong>线程切换</strong>的现象，切换意味着<strong>中断</strong>和<strong>恢复</strong>，所以需要一块区域来保存<strong>当前线程的执行信息</strong></p>
-<p>所以程序计数器就是记录各个线程执行的字节码的地址（分支、循环、跳转、异常、线程恢复等都依赖于计数器）</p>
-<hr>
-<h2 id="虚拟机栈"><a href="#虚拟机栈" class="headerlink" title="虚拟机栈"></a>虚拟机栈</h2><p>每个线程在创建的时候都会创建一个<strong>虚拟机栈</strong>，每次方法调用都会创建一个<strong>栈帧</strong>。每个<strong>栈帧</strong>会包含几块内容：局部变量表、操作数栈、动态连接和返回地址。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/panghairui/image-hosting@master/panghairui-blog/image.1cus2y3es0n4.png"></p>
-<p>虚拟机栈的作用：它保存了方法的局部变量、部分变量的计算并参与了方法的调用和返回。</p>
-<hr>
-<h2 id="本地方法栈"><a href="#本地方法栈" class="headerlink" title="本地方法栈"></a>本地方法栈</h2><p>本地方法栈跟虚拟机栈的功能类似，虚拟机栈用于管理Java函数的调用，而本地方法栈则用于管理本地方法的调用。这里的<strong>本地方法</strong>指的是<strong>非Java方法</strong>，一般本地方法是用C语言实现的。</p>
-<hr>
-<h2 id="方法区"><a href="#方法区" class="headerlink" title="方法区"></a>方法区</h2><p>运行时数据区这个分区是JVM的规范，具体的落地实现，不同的虚拟机厂商可能是不一样的，所以方法区也只是JVM中规范的一部分而已。</p>
-<p>在HotSpot虚拟机，就会常常提到<strong>永久代</strong>这个词。HotSpot虚拟机在JDK8前用<strong>永久代</strong>实现了方法区，而很多其他厂商的虚拟机其实是没有<strong>永久代</strong>的概念的。</p>
-<p>在JDK8中，已经用<strong>元空间</strong>来替换了<strong>永久代</strong>作为<strong>方法区</strong>的实现了。</p>
-<p>方法区主要是用来存放已被虚拟机加载的<strong>类相关信息</strong>：包括类信息、常量池。</p>
-<p>类信息又包括了类的版本、字段、方法、接口和父类等信息。</p>
-<p>常量池又分为<strong>静态常量池</strong>和<strong>运行时常量池</strong></p>
-<p>静态常量池主要存储的是字面量以及符号引用等信息，静态常量池也包括了我们所说的<strong>字符串常量池</strong></p>
-<p><strong>运行时常量池</strong>存储的是<strong>类加载</strong>时生成的<strong>直接引用</strong>等信息</p>
-<p>从<strong>逻辑分区</strong>的角度而言，常量池属于方法区</p>
-<p>但在JDK7以后，就已经把<strong>运行时常量池</strong>和<strong>静态常量池</strong>转移到了堆内存中进行存储。</p>
-<p>所以对于物理分区来说，<strong>运行时常量池</strong>和<strong>静态常量池</strong>属于堆。</p>
-<blockquote>
-<p>JDK8把方法区的实现从永久代变成了元空间，有什么区别？</p>
+<h2 id="经典换钱问题"><a href="#经典换钱问题" class="headerlink" title="经典换钱问题"></a>经典换钱问题</h2><h3 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h3><p>给定数组arr，arr中所有的值都为正数且不重复。每个值代表一种面值的货币，每种面值的货币可以使用任意张，再给定一个整数aim代表要找的钱数，求换钱有多少种方法。</p>
+<h3 id="举例"><a href="#举例" class="headerlink" title="举例"></a>举例</h3><p>arr = [5, 10, 25, 1]，aim = 0</p>
+<p>组成0元的方法有一种，就是所有面值的货币都不用，所以返回1。</p>
+<p>arr = [5, 10, 25, 1]，aim = 15</p>
+<p>组成15元的方法有6种，1张10元+1张5元、1张10元+5张1元。。。。。。</p>
+<p>arr = [3, 5]，aim = 2</p>
+<p>任何方法都无法组成2元，返回0</p>
+<h3 id="思路及代码"><a href="#思路及代码" class="headerlink" title="思路及代码"></a>思路及代码</h3><blockquote>
+<p>一切动态规划都来源于递归，所以我们可以先写一个递归版本，也就是尝试版本，尝试各种方法去凑钱。</p>
 </blockquote>
-<p>最主要的区别就是：元空间存储不在虚拟机中，而是使用本地内存，JVM不会再出现方法区的内存溢出，以往永久代经常因为内存不够而导致OOM。</p>
-<p>按JDK8版本，总结起来其实就相当于类信息是存储在元空间的。</p>
-<p>而常量池用JDK7开始，从物理存储角度上就在堆中，这是没有变化的。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/panghairui/image-hosting@master/panghairui-blog/image.6tcxcnpc0xc0.png"></p>
+<p><strong>递归过程</strong></p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">/**
+ * index : 可以任意自由使用index及其之后所有的钱
+ * aim : 目标钱数
+ * 返回值 : 方法数
+ */</span>
+<span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">int</span> <span class="token function">process1</span><span class="token punctuation">(</span><span class="token keyword">int</span><span class="token punctuation">[</span><span class="token punctuation">]</span> arr<span class="token punctuation">,</span> <span class="token keyword">int</span> index<span class="token punctuation">,</span> <span class="token keyword">int</span> aim<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">int</span> res <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+  	<span class="token keyword">if</span> <span class="token punctuation">(</span>index <span class="token operator">==</span> arr<span class="token punctuation">.</span>length<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      	res <span class="token operator">=</span> aim <span class="token operator">==</span> <span class="token number">0</span> <span class="token operator">?</span> <span class="token number">1</span> <span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+      	<span class="token keyword">for</span>	<span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> arr<span class="token punctuation">[</span>index<span class="token punctuation">]</span> <span class="token operator">*</span> i <span class="token operator">&lt;=</span> aim<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+          	res <span class="token operator">+=</span> <span class="token function">process1</span><span class="token punctuation">(</span>arr<span class="token punctuation">,</span> index <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">,</span> aim <span class="token operator">-</span> arr<span class="token punctuation">[</span>index<span class="token punctuation">]</span> <span class="token operator">*</span> i<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  	<span class="token keyword">return</span> res<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">int</span> <span class="token function">coins1</span><span class="token punctuation">(</span><span class="token keyword">int</span><span class="token punctuation">[</span><span class="token punctuation">]</span> arr<span class="token punctuation">,</span> <span class="token keyword">int</span> aim<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  	<span class="token keyword">if</span> <span class="token punctuation">(</span>arr <span class="token operator">==</span> <span class="token keyword">null</span> <span class="token operator">||</span> arr<span class="token punctuation">.</span>length <span class="token operator">==</span> <span class="token number">0</span> <span class="token operator">||</span> aim <span class="token operator">&lt;</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      	<span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+  	<span class="token keyword">return</span> <span class="token function">process1</span><span class="token punctuation">(</span>arr<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> aim<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>👆上面这坨代码，这玩意巨暴力无比，绝对是不能用的，有相当多的重复的递归过程。</p>
+<p>好，接下来写第一个优化版本。先分析一下，哪些值固定，我们的返回值就固定。</p>
+<p>从上面的代码我们可以发现，index 和 aim 一旦固定，返回值结果就会固定。</p>
+<p>这样，我们就可以把计算过的index和aim相同的组合情况存储下来，下次再次出现相同的index和aim的组合时，我们直接去取计算过的内容，就好了。这样就避免了重复计算，这就是记忆化搜索！</p>
+<blockquote>
+<p>记忆化搜索代码</p>
+</blockquote>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">/**
+ * key : index + "_" + aim
+ * value : 返回值
+ */</span>
+<span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token class-name">HashMap</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">Integer</span><span class="token punctuation">&gt;</span></span> map <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">HashMap</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">int</span> <span class="token function">process2</span><span class="token punctuation">(</span><span class="token keyword">int</span><span class="token punctuation">[</span><span class="token punctuation">]</span> arr<span class="token punctuation">,</span> <span class="token keyword">int</span> index<span class="token punctuation">,</span> <span class="token keyword">int</span> aim<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">int</span> res <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+  	<span class="token keyword">if</span> <span class="token punctuation">(</span>index <span class="token operator">==</span> arr<span class="token punctuation">.</span>length<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      	res <span class="token operator">=</span> aim <span class="token operator">==</span> <span class="token number">0</span> <span class="token operator">?</span> <span class="token number">1</span> <span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+      	<span class="token keyword">for</span>	<span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> arr<span class="token punctuation">[</span>index<span class="token punctuation">]</span> <span class="token operator">*</span> i <span class="token operator">&lt;=</span> aim<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+          	<span class="token keyword">int</span> nextAim <span class="token operator">=</span> aim <span class="token operator">-</span> arr<span class="token punctuation">[</span>index<span class="token punctuation">]</span> <span class="token operator">*</span> i<span class="token punctuation">;</span>
+          	<span class="token class-name">String</span> key <span class="token operator">=</span> <span class="token class-name">String</span><span class="token punctuation">.</span><span class="token function">valueOf</span><span class="token punctuation">(</span>index <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">"_"</span> <span class="token operator">+</span> <span class="token class-name">String</span><span class="token punctuation">.</span><span class="token function">valueOf</span><span class="token punctuation">(</span>nextAim<span class="token punctuation">)</span><span class="token punctuation">;</span>
+          	<span class="token keyword">if</span> <span class="token punctuation">(</span>map<span class="token punctuation">.</span><span class="token function">containsKey</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+              	<span class="token comment">// 如果之前算过，就不进行递归了，直接把结果拿出来，避免大量的重复计算过程</span>
+              	res <span class="token operator">+=</span> map<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+              	res <span class="token operator">+=</span> <span class="token function">process1</span><span class="token punctuation">(</span>arr<span class="token punctuation">,</span> index <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">,</span> nextAim<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  	map<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">.</span><span class="token function">valueOf</span><span class="token punctuation">(</span>index<span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">"_"</span> <span class="token operator">+</span> <span class="token class-name">String</span><span class="token punctuation">.</span><span class="token function">valueOf</span><span class="token punctuation">(</span>aim<span class="token punctuation">)</span><span class="token punctuation">,</span> res<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  	<span class="token keyword">return</span> res<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>有了👆上面这段代码，就可以让复杂度极具的下降。但是还不够啊，还能再优化，</p>
+<p>接下来推动态规划。</p>
+<p>我们由上面知道，index和aim确定，返回值就确定，那么我们的所有答案一定能由一个二维表装下。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/panghairui/image-hosting@master/panghairui-blog/image.1fy554e4gg2o.png"></p>
+<p>接下来分析这题的目标是什么</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">int</span> <span class="token function">coins1</span><span class="token punctuation">(</span><span class="token keyword">int</span><span class="token punctuation">[</span><span class="token punctuation">]</span> arr<span class="token punctuation">,</span> <span class="token keyword">int</span> aim<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  	<span class="token keyword">if</span> <span class="token punctuation">(</span>arr <span class="token operator">==</span> <span class="token keyword">null</span> <span class="token operator">||</span> arr<span class="token punctuation">.</span>length <span class="token operator">==</span> <span class="token number">0</span> <span class="token operator">||</span> aim <span class="token operator">&lt;</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      	<span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+  	<span class="token comment">// 返回的就是目标</span>
+  	<span class="token keyword">return</span> <span class="token function">process1</span><span class="token punctuation">(</span>arr<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> aim<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>所以我们这题的目标就是index为0，aim为传入的aim这个状态。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/panghairui/image-hosting@master/panghairui-blog/image.5nuxjzzbb2s0.png"></p>
+<p>然后看这个二维表的哪些位置是可以直接确定的。看递归中的base case，也就是下面的代码</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">if</span> <span class="token punctuation">(</span>index <span class="token operator">==</span> arr<span class="token punctuation">.</span>length<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    res <span class="token operator">=</span> aim <span class="token operator">==</span> <span class="token number">0</span> <span class="token operator">?</span> <span class="token number">1</span> <span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>从这里可以看出，当index为arr.length的时候我们的值是可以确定的。</p>
+<p>然后在index为arr.length的基础上，aim值为0的时候返回1否则是0。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/panghairui/image-hosting@master/panghairui-blog/image.6u94gwyy2lo0.png" alt="image"></p>
+<p>接下来，看位置依赖。</p>
+<p>看一下，是怎么调递归的</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">for</span>	<span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> arr<span class="token punctuation">[</span>index<span class="token punctuation">]</span> <span class="token operator">*</span> i <span class="token operator">&lt;=</span> aim<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+		res <span class="token operator">+=</span> <span class="token function">process1</span><span class="token punctuation">(</span>arr<span class="token punctuation">,</span> index <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">,</span> aim <span class="token operator">-</span> arr<span class="token punctuation">[</span>index<span class="token punctuation">]</span> <span class="token operator">*</span> i<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>从这段代码可以看出来，在当前index和aim位置的返回值，index依赖于index + 1，也就是二维表中下一行的值。那依赖于下一行的哪些值呢？就是减去1张当前值的aim，减去2张当前值的aim，减去3张当前值的aim。。。。。直到越界，最后把这一行的值相加即可得到当前位置的值。</p>
+<p>![image-20210710153234631](/Users/panghairui/Library/Application Support/typora-user-images/image-20210710153234631.png)</p>
+<p>图中i,aim是我们的当前位置，下面的?就是我们依赖的位置，将?的值相加就能得到我们当前位置的值。</p>
+<p>又因为我们有了最后一行，我们每个点只依赖于该点所在位置的下一行。这样我们就可以补齐整张表。</p>
+<p>拿[5, 3, 2]，aim = 10这个例子举例，下面就是它的二维矩阵。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/panghairui/image-hosting@master/panghairui-blog/image.28clclu7wqm8.png"></p>
+<p>接下来就是最后一步优化，在这个二维数组的基础上进行优化。</p>
+<p>上面说了，i,aim 这个点的位置，是需要它的下一行多个值进行累加的结果。但是当你计算到 i,aim 这个点的时候，i,aim-arr[i] 这个点你已经计算过了。如下图所示</p>
+<p><img src="https://cdn.jsdelivr.net/gh/panghairui/image-hosting@master/panghairui-blog/image.1a8qw0oqmpcw.png"></p>
+<p>当你求当前点时，?位置已经求解过了。那我当前点的值岂不是直接就是当前点下面的那个点的值加上?位置的值。</p>
+<p>又省略了大量的重复过程！！！</p>
+<p>而这，就是动态规划。得说不说，是真的🐂。</p>
+<p>下面上代码</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">int</span> <span class="token function">coinDp</span><span class="token punctuation">(</span><span class="token keyword">int</span><span class="token punctuation">[</span><span class="token punctuation">]</span> arr<span class="token punctuation">,</span> <span class="token keyword">int</span> aim<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  	<span class="token keyword">if</span> <span class="token punctuation">(</span>arr <span class="token operator">==</span> <span class="token keyword">null</span> <span class="token operator">||</span> arr<span class="token punctuation">.</span>length <span class="token operator">==</span> <span class="token number">0</span> <span class="token operator">||</span> aim <span class="token operator">&lt;</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      	<span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+  	<span class="token keyword">int</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span> dp <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token keyword">int</span><span class="token punctuation">[</span>arr<span class="token punctuation">.</span>length<span class="token punctuation">]</span><span class="token punctuation">[</span>aim <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+  	<span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> arr<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      	dp<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+  	<span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> j <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span> arr<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">*</span> j <span class="token operator">&lt;=</span> aim<span class="token punctuation">;</span> j<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      	dp<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">[</span>arr<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">*</span> j<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+  	<span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> arr<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      	<span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> j <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span> j <span class="token operator">&lt;=</span> aim<span class="token punctuation">;</span> j<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+          	dp<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">[</span>j<span class="token punctuation">]</span> <span class="token operator">=</span> dp<span class="token punctuation">[</span>i <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">[</span>j<span class="token punctuation">]</span><span class="token punctuation">;</span>
+          	dp<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">[</span>j<span class="token punctuation">]</span> <span class="token operator">+=</span> j <span class="token operator">-</span> arr<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">&gt;=</span> <span class="token number">0</span> <span class="token operator">?</span> dp<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">[</span>j <span class="token operator">-</span> arr<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">]</span> <span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  	<span class="token keyword">return</span> dp<span class="token punctuation">[</span>arr<span class="token punctuation">.</span>length <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">[</span>aim<span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>其实这题在空间上还是可以优化的，用滚动数组，但是目前我的重心是学习动态规划，空间优化的代码先不写了，以后有时间补。</p>
 <hr>
-<h2 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h2><p>堆是线程共享的区域，几乎类的实例和数组分配的内存都来自于它。</p>
-<p>堆被划分为新生代和老年代，新生代又被进一步划分为Eden和Survivor区，最后Survivor由From和To组成。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/panghairui/image-hosting@master/panghairui-blog/image.xs8rfk598hc.png"></p>
-<p>将堆内存分开了几块区域，主要是跟内存回收有关（垃圾回收机制）。</p>
-<hr>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>Java内存模型是跟<strong>并发</strong>相关的，它是为了屏蔽底层细节而提出的规范，希望在上层（Java层面上）在操作内存时在不同的平台上也有相同的效果。</p>
-<p><strong>JVM内存结构组成</strong>：JVM内存结构又称为「运行时数据区域」。主要有五部分组成：虚拟机栈、本地方法栈、程序计数器、方法区和堆。其中方法区和堆是线程共享的。虚拟机栈、本地方法栈以及程序计数器是线程隔离的。</p>
-<hr>
-<p>更详细学习推荐博客：<a target="_blank" rel="noopener" href="https://pdai.tech/md/java/jvm/java-jvm-struct.html%EF%BC%88%E8%BF%99%E4%B8%AA%E5%9C%A8%E6%88%91%E7%9A%84%E5%8F%8B%E6%83%85%E9%93%BE%E6%8E%A5%E6%9C%89%EF%BC%89">https://pdai.tech/md/java/jvm/java-jvm-struct.html（这个在我的友情链接有）</a></p>
-<p>更详细学习推荐书籍：《深入理解Java虚拟机》</p>
+<h2 id="动态规划学习资源推荐"><a href="#动态规划学习资源推荐" class="headerlink" title="动态规划学习资源推荐"></a>动态规划学习资源推荐</h2><p>课程：左神的课（左神yyds）</p>
+<p>练习：Leetcode，codeforce，各大OJ。</p>
 
                 
             </div>
@@ -510,7 +607,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://example.com/2021/07/09/jvm-nei-cun-jie-gou/">http://example.com/2021/07/09/jvm-nei-cun-jie-gou/</a>
+                    <a href="http://example.com/2021/07/10/dong-tai-gui-hua-xue-xi-1/">http://example.com/2021/07/10/dong-tai-gui-hua-xue-xi-1/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -548,12 +645,12 @@
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/Java/">
-                                    <span class="chip bg-color">Java</span>
+                                <a href="/tags/%E7%AE%97%E6%B3%95/">
+                                    <span class="chip bg-color">算法</span>
                                 </a>
                             
-                                <a href="/tags/JVM/">
-                                    <span class="chip bg-color">JVM</span>
+                                <a href="/tags/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/">
+                                    <span class="chip bg-color">动态规划</span>
                                 </a>
                             
                         </div>
@@ -860,9 +957,10 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/2021/07/10/dong-tai-gui-hua-xue-xi-1/">
                     <div class="card-image">
@@ -879,9 +977,9 @@
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2021-07-10
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-07-10
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
@@ -894,6 +992,7 @@
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
@@ -916,18 +1015,18 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2021/07/09/she-ji-mo-shi-xue-xi-bi-ji/">
+                <a href="/2021/07/09/jvm-nei-cun-jie-gou/">
                     <div class="card-image">
                         
-                        <img src="https://cdn.jsdelivr.net/gh/panghairui/image-hosting@master/panghairui-blog/37aa5dc36d88444786b6b543845963ba.6xps2cnfooc0.jpg" class="responsive-img" alt="设计模式学习笔记">
+                        <img src="https://cdn.jsdelivr.net/gh/panghairui/image-hosting@master/panghairui-blog/792a4b6934fc491b81342206e3192e59.6tvfr7rcbv40.png" class="responsive-img" alt="JVM内存结构">
                         
-                        <span class="card-title">设计模式学习笔记</span>
+                        <span class="card-title">JVM内存结构</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            设计模式学习笔记
+                            JVM内存结构
                         
                     </div>
                     <div class="publish-info">
@@ -938,8 +1037,8 @@
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="post-category">
-                                    设计模式学习笔记
+                            <a href="/categories/Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="post-category">
+                                    Java学习笔记
                                 </a>
                             
                             
@@ -949,8 +1048,12 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">
-                        <span class="chip bg-color">设计模式</span>
+                    <a href="/tags/Java/">
+                        <span class="chip bg-color">Java</span>
+                    </a>
+                    
+                    <a href="/tags/JVM/">
+                        <span class="chip bg-color">JVM</span>
                     </a>
                     
                 </div>
