@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="设计模式学习笔记, 算法，开发，编程，数据结构">
+    <meta name="keywords" content="JVM内存结构, 算法，开发，编程，数据结构">
     <meta name="description" content="算法与编程之美">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>设计模式学习笔记 | 海的博客</title>
+    <title>JVM内存结构 | 海的博客</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -249,12 +249,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/panghairui/image-hosting@master/panghairui-blog/37aa5dc36d88444786b6b543845963ba.6xps2cnfooc0.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/panghairui/image-hosting@master/panghairui-blog/792a4b6934fc491b81342206e3192e59.6tvfr7rcbv40.png')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">设计模式学习笔记</h1>
+                    <h1 class="description center-align post-title">JVM内存结构</h1>
                 </div>
             </div>
         </div>
@@ -370,8 +370,12 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">
-                                <span class="chip bg-color">设计模式</span>
+                            <a href="/tags/Java/">
+                                <span class="chip bg-color">Java</span>
+                            </a>
+                        
+                            <a href="/tags/JVM/">
+                                <span class="chip bg-color">JVM</span>
                             </a>
                         
                     </div>
@@ -382,8 +386,8 @@
                     <div class="post-cate">
                         <i class="fas fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="post-category">
-                                设计模式学习笔记
+                            <a href="/categories/Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="post-category">
+                                Java学习笔记
                             </a>
                         
                     </div>
@@ -404,14 +408,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    445
+                    1.2k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    1 分
+                    4 分
                 </div>
                 
 
@@ -434,94 +438,52 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h1 id="设计模式学习笔记（持续更新）"><a href="#设计模式学习笔记（持续更新）" class="headerlink" title="设计模式学习笔记（持续更新）"></a>设计模式学习笔记（持续更新）</h1><hr>
-<h2 id="简单工厂模式"><a href="#简单工厂模式" class="headerlink" title="简单工厂模式"></a>简单工厂模式</h2><h3 id="简单工厂结构"><a href="#简单工厂结构" class="headerlink" title="简单工厂结构"></a>简单工厂结构</h3><p><img src="https://cdn.jsdelivr.net/gh/panghairui/image-hosting@master/panghairui-blog/image.4ysb93bivsw0.png"></p>
-<ul>
-<li>Api : 定义客户所需要的功能接口。</li>
-<li>Impl : 具体实现Api的实现类，可能会有多个</li>
-<li>Factory : 工厂，选择合适的实现类来创建Api接口对象</li>
-<li>Client : 客户端，通过Factory来获取Api接口对象，然后面向Api接口编程</li>
-</ul>
-<h3 id="简单工厂示例代码"><a href="#简单工厂示例代码" class="headerlink" title="简单工厂示例代码"></a>简单工厂示例代码</h3><blockquote>
-<p>Api定义的示例代码</p>
-</blockquote>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">/**
- * 接口的定义，该接口可以通过简单工厂来创建
- */</span>
-<span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">Api</span> <span class="token punctuation">{</span>
-  <span class="token comment">/**
-   * 示意，具体功能方法的定义
-   * @param s 示意，需要的参数
-   */</span>
-  <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">operation</span><span class="token punctuation">(</span><span class="token class-name">String</span> s<span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
+                <h1 id="JVM内存结构学习笔记"><a href="#JVM内存结构学习笔记" class="headerlink" title="JVM内存结构学习笔记"></a>JVM内存结构学习笔记</h1><hr>
+<h2 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h2><p>class文件会被类加载器装载到JVM中，并且JVM会负责程序<strong>运行时</strong>的<strong>内存管理</strong></p>
+<p>而JVM的内存结构，往往指的就是JVM定义的<strong>运行时数据区</strong></p>
+<hr>
+<h2 id="运行时数据区"><a href="#运行时数据区" class="headerlink" title="运行时数据区"></a>运行时数据区</h2><p>分为五大块：方法区、堆、程序计数器、虚拟机栈、本地方法栈。</p>
+<p>这是JVM<strong>规范</strong>的分区概念，到具体的实际落地，不同的厂商实现可能是有所区别的。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/panghairui/image-hosting@master/panghairui-blog/image.7jauvc56vhw0.png"></p>
+<hr>
+<h2 id="程序计数器"><a href="#程序计数器" class="headerlink" title="程序计数器"></a>程序计数器</h2><p>Java是多线程语言，假设线程数大于CPU数，就很有可能有<strong>线程切换</strong>的现象，切换意味着<strong>中断</strong>和<strong>恢复</strong>，所以需要一块区域来保存<strong>当前线程的执行信息</strong></p>
+<p>所以程序计数器就是记录各个线程执行的字节码的地址（分支、循环、跳转、异常、线程恢复等都依赖于计数器）</p>
+<hr>
+<h2 id="虚拟机栈"><a href="#虚拟机栈" class="headerlink" title="虚拟机栈"></a>虚拟机栈</h2><p>每个线程在创建的时候都会创建一个<strong>虚拟机栈</strong>，每次方法调用都会创建一个<strong>栈帧</strong>。每个<strong>栈帧</strong>会包含几块内容：局部变量表、操作数栈、动态连接和返回地址。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/panghairui/image-hosting@master/panghairui-blog/image.1cus2y3es0n4.png"></p>
+<p>虚拟机栈的作用：它保存了方法的局部变量、部分变量的计算并参与了方法的调用和返回。</p>
+<hr>
+<h2 id="本地方法栈"><a href="#本地方法栈" class="headerlink" title="本地方法栈"></a>本地方法栈</h2><p>本地方法栈跟虚拟机栈的功能类似，虚拟机栈用于管理Java函数的调用，而本地方法栈则用于管理本地方法的调用。这里的<strong>本地方法</strong>指的是<strong>非Java方法</strong>，一般本地方法是用C语言实现的。</p>
+<hr>
+<h2 id="方法区"><a href="#方法区" class="headerlink" title="方法区"></a>方法区</h2><p>运行时数据区这个分区是JVM的规范，具体的落地实现，不同的虚拟机厂商可能是不一样的，所以方法区也只是JVM中规范的一部分而已。</p>
+<p>在HotSpot虚拟机，就会常常提到<strong>永久代</strong>这个词。HotSpot虚拟机在JDK8前用<strong>永久代</strong>实现了方法区，而很多其他厂商的虚拟机其实是没有<strong>永久代</strong>的概念的。</p>
+<p>在JDK8中，已经用<strong>元空间</strong>来替换了<strong>永久代</strong>作为<strong>方法区</strong>的实现了。</p>
+<p>方法区主要是用来存放已被虚拟机加载的<strong>类相关信息</strong>：包括类信息、常量池。</p>
+<p>类信息又包括了类的版本、字段、方法、接口和父类等信息。</p>
+<p>常量池又分为<strong>静态常量池</strong>和<strong>运行时常量池</strong></p>
+<p>静态常量池主要存储的是字面量以及符号引用等信息，静态常量池也包括了我们所说的<strong>字符串常量池</strong></p>
+<p><strong>运行时常量池</strong>存储的是<strong>类加载</strong>时生成的<strong>直接引用</strong>等信息</p>
+<p>从<strong>逻辑分区</strong>的角度而言，常量池属于方法区</p>
+<p>但在JDK7以后，就已经把<strong>运行时常量池</strong>和<strong>静态常量池</strong>转移到了堆内存中进行存储。</p>
+<p>所以对于物理分区来说，<strong>运行时常量池</strong>和<strong>静态常量池</strong>属于堆。</p>
 <blockquote>
-<p>定义了接口，接下来实现它。ImplA的示例代码</p>
+<p>JDK8把方法区的实现从永久代变成了元空间，有什么区别？</p>
 </blockquote>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">/**
- * 接口的具体实现对象A
- */</span>
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ImplA</span> <span class="token keyword">implements</span> <span class="token class-name">Api</span> <span class="token punctuation">{</span>
-  <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">operation</span><span class="token punctuation">(</span><span class="token class-name">String</span> s<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token comment">// 实现功能的代码，示意一下</span>
-    <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"ImplA s=="</span> <span class="token operator">+</span> s<span class="token punctuation">)</span><span class="token punctuation">;</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<blockquote>
-<p>ImplB的示例代码</p>
-</blockquote>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">/**
- * 接口的具体实现对象B
- */</span>
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ImplB</span> <span class="token keyword">implements</span> <span class="token class-name">Api</span> <span class="token punctuation">{</span>
-  <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">operation</span><span class="token punctuation">(</span><span class="token class-name">String</span> s<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token comment">// 实现功能的代码，示意一下</span>
-    <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"ImplB s=="</span> <span class="token operator">+</span> s<span class="token punctuation">)</span><span class="token punctuation">;</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<blockquote>
-<p>简单工厂的实现</p>
-</blockquote>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">/**
- * 工厂类，用来创建Api对象
- */</span>
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Factory</span> <span class="token punctuation">{</span>
-  <span class="token comment">/**
-   * 具体创建Api对象的方法
-   * @param condition示意，从外部传入的选择条件
-   * @return 创建好的Api对象
-   */</span>
-  <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token class-name">Api</span> <span class="token function">createApi</span><span class="token punctuation">(</span><span class="token keyword">int</span> condition<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token comment">// 应该根据某些条件去选择究竟创建哪一个具体的实现对象</span>
-    <span class="token comment">// 这些条件可以从外部传入，也可以从其他途径来获取</span>
-    <span class="token comment">// 如果只有一个实现，可以省略条件</span>
-    <span class="token class-name">Api</span> api <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
-    <span class="token keyword">if</span><span class="token punctuation">(</span>condition <span class="token operator">==</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      api <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ImplA</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span><span class="token punctuation">(</span>condition <span class="token operator">==</span> <span class="token number">2</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      api <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ImplB</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-    <span class="token keyword">return</span> api<span class="token punctuation">;</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<blockquote>
-<p>客户端的示例代码</p>
-</blockquote>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">/**
- * 客户端，使用Api接口
- */</span>
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Client</span> <span class="token punctuation">{</span>
-  <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token comment">// 通过简单工厂来获取接口对象</span>
-    <span class="token class-name">Api</span> api <span class="token operator">=</span> <span class="token class-name">Factory</span><span class="token punctuation">.</span><span class="token function">createApi</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    api<span class="token punctuation">.</span><span class="token function">operation</span><span class="token punctuation">(</span><span class="token string">"正在使用简单工厂"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
+<p>最主要的区别就是：元空间存储不在虚拟机中，而是使用本地内存，JVM不会再出现方法区的内存溢出，以往永久代经常因为内存不够而导致OOM。</p>
+<p>按JDK8版本，总结起来其实就相当于类信息是存储在元空间的。</p>
+<p>而常量池用JDK7开始，从物理存储角度上就在堆中，这是没有变化的。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/panghairui/image-hosting@master/panghairui-blog/image.6tcxcnpc0xc0.png"></p>
+<hr>
+<h2 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h2><p>堆是线程共享的区域，几乎类的实例和数组分配的内存都来自于它。</p>
+<p>堆被划分为新生代和老年代，新生代又被进一步划分为Eden和Survivor区，最后Survivor由From和To组成。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/panghairui/image-hosting@master/panghairui-blog/image.xs8rfk598hc.png"></p>
+<p>将堆内存分开了几块区域，主要是跟内存回收有关（垃圾回收机制）。</p>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>Java内存模型是跟<strong>并发</strong>相关的，它是为了屏蔽底层细节而提出的规范，希望在上层（Java层面上）在操作内存时在不同的平台上也有相同的效果。</p>
+<p><strong>JVM内存结构组成</strong>：JVM内存结构又称为「运行时数据区域」。主要有五部分组成：虚拟机栈、本地方法栈、程序计数器、方法区和堆。其中方法区和堆是线程共享的。虚拟机栈、本地方法栈以及程序计数器是线程隔离的。</p>
+<hr>
+<p>更详细学习推荐博客：<a target="_blank" rel="noopener" href="https://pdai.tech/md/java/jvm/java-jvm-struct.html%EF%BC%88%E8%BF%99%E4%B8%AA%E5%9C%A8%E6%88%91%E7%9A%84%E5%8F%8B%E6%83%85%E9%93%BE%E6%8E%A5%E6%9C%89%EF%BC%89">https://pdai.tech/md/java/jvm/java-jvm-struct.html（这个在我的友情链接有）</a></p>
+<p>更详细学习推荐书籍：《深入理解Java虚拟机》</p>
 
                 
             </div>
@@ -548,7 +510,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://example.com/2021/07/09/she-ji-mo-shi-xue-xi-bi-ji/">http://example.com/2021/07/09/she-ji-mo-shi-xue-xi-bi-ji/</a>
+                    <a href="http://example.com/2021/07/09/jvm-nei-cun-jie-gou/">http://example.com/2021/07/09/jvm-nei-cun-jie-gou/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -586,8 +548,12 @@
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">
-                                    <span class="chip bg-color">设计模式</span>
+                                <a href="/tags/Java/">
+                                    <span class="chip bg-color">Java</span>
+                                </a>
+                            
+                                <a href="/tags/JVM/">
+                                    <span class="chip bg-color">JVM</span>
                                 </a>
                             
                         </div>
@@ -894,9 +860,10 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/2021/07/09/jvm-nei-cun-jie-gou/">
                     <div class="card-image">
@@ -913,9 +880,9 @@
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2021-07-09
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-07-09
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
@@ -928,6 +895,7 @@
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
@@ -950,18 +918,18 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2021/07/09/webmagic-wu-tou-liu-lan-qi/">
+                <a href="/2021/07/09/she-ji-mo-shi-xue-xi-bi-ji/">
                     <div class="card-image">
                         
-                        <img src="https://cdn.jsdelivr.net/gh/panghairui/image-hosting@master/panghairui-blog/56ac935951ab4af78bf31af55b600d95.29q7vpufj1og.jpg" class="responsive-img" alt="WebMagic + Selenium + 无头浏览器">
+                        <img src="https://cdn.jsdelivr.net/gh/panghairui/image-hosting@master/panghairui-blog/37aa5dc36d88444786b6b543845963ba.6xps2cnfooc0.jpg" class="responsive-img" alt="设计模式学习笔记">
                         
-                        <span class="card-title">WebMagic + Selenium + 无头浏览器</span>
+                        <span class="card-title">设计模式学习笔记</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            WebMagic + Selenium + 无头浏览器 学习笔记
+                            设计模式学习笔记
                         
                     </div>
                     <div class="publish-info">
@@ -972,8 +940,8 @@
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/%E5%B7%A5%E4%BD%9C%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="post-category">
-                                    工作学习笔记
+                            <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="post-category">
+                                    设计模式学习笔记
                                 </a>
                             
                             
@@ -983,8 +951,8 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/%E7%88%AC%E8%99%AB%E7%9B%B8%E5%85%B3/">
-                        <span class="chip bg-color">爬虫相关</span>
+                    <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">
+                        <span class="chip bg-color">设计模式</span>
                     </a>
                     
                 </div>
