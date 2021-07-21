@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="JVM垃圾回收机制, 算法，开发，编程，数据结构">
+    <meta name="keywords" content="阶段性总结20210721, 算法，开发，编程，数据结构">
     <meta name="description" content="算法与编程之美">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>JVM垃圾回收机制 | 海的博客</title>
+    <title>阶段性总结20210721 | 海的博客</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -249,12 +249,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/panghairui/image-hosting@master/panghairui-blog/75e32c6f9db74df8917dd9163219fefd.4ys7phsa1d00.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/panghairui/image-hosting@master/panghairui-blog/2d6eb26d900a4631817007b08e7bf93e.436nqojzodc0.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">JVM垃圾回收机制</h1>
+                    <h1 class="description center-align post-title">阶段性总结20210721</h1>
                 </div>
             </div>
         </div>
@@ -370,12 +370,8 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/Java/">
-                                <span class="chip bg-color">Java</span>
-                            </a>
-                        
-                            <a href="/tags/JVM/">
-                                <span class="chip bg-color">JVM</span>
+                            <a href="/tags/%E9%98%B6%E6%AE%B5%E6%80%A7%E6%80%BB%E7%BB%93/">
+                                <span class="chip bg-color">阶段性总结</span>
                             </a>
                         
                     </div>
@@ -386,8 +382,8 @@
                     <div class="post-cate">
                         <i class="fas fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="post-category">
-                                Java学习笔记
+                            <a href="/categories/%E9%98%B6%E6%AE%B5%E6%80%A7%E6%80%BB%E7%BB%93/" class="post-category">
+                                阶段性总结
                             </a>
                         
                     </div>
@@ -399,7 +395,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2021-07-19
+                    2021-07-21
                 </div>
                 
 
@@ -408,14 +404,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    1.9k
+                    1.1k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    6 分
+                    3 分
                 </div>
                 
 
@@ -438,78 +434,64 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h1 id="JVM垃圾回收机制学习笔记"><a href="#JVM垃圾回收机制学习笔记" class="headerlink" title="JVM垃圾回收机制学习笔记"></a>JVM垃圾回收机制学习笔记</h1><hr>
-<p><img src="https://cdn.jsdelivr.net/gh/panghairui/image-hosting@master/panghairui-blog/image.sk9x704i7m8.png"></p>
-<h2 id="JVM垃圾回收机制"><a href="#JVM垃圾回收机制" class="headerlink" title="JVM垃圾回收机制"></a>JVM垃圾回收机制</h2><p>当使用 Java 的时候，会创建很多对象，但我们未曾<strong>手动</strong>将这些对象进行清除。</p>
-<p>而如果用 C / C++ 语言的时候，用完是需要自己 free 掉的</p>
-<p>那为什么在写 Java 的时候，不用手动释放“垃圾”呢？就是因为JVM帮我们做了。</p>
-<p>只要对象不再被使用了，我们就认为该对象就是垃圾，对象所占用的空间就可以回收了。</p>
-<hr>
-<h2 id="如何判断对象不再被使用"><a href="#如何判断对象不再被使用" class="headerlink" title="如何判断对象不再被使用"></a>如何判断对象不再被使用</h2><p>常用的算法有两个 <strong>引用计数法</strong> 和 <strong>可达性分析</strong></p>
-<p>引用计数法思路很简单：当对象被引用则 +1 ，但对象引用失败则 -1 。当计数器为0时，说明对象不再被引用，可以被回收。</p>
-<p>引用计数法的缺点是：如果对象存在循环依赖，那就无法定位该对象是否应该被回收</p>
-<p>另一种就是可达性分析：它从 <strong>GC Roots</strong> 开始向下搜索，当对象到 <strong>GC Roots</strong> 都没有任何引用相连时，说明对象是不可用的，可以被回收。</p>
-<p><strong>GC Roots</strong> 是一组必须活跃的引用</p>
-<p>从 GC Root 出发，程序通过直接引用或者间接引用，能够找到可能正在被使用的对象。</p>
-<p>JVM用的就是<strong>可达性分析算法</strong>来判断对象是否为垃圾。</p>
-<hr>
-<h2 id="垃圾回收算法"><a href="#垃圾回收算法" class="headerlink" title="垃圾回收算法"></a>垃圾回收算法</h2><p>垃圾回收第一步是<strong>标记</strong>，标记哪些没有被 <strong>GC Roots</strong> 引用的对象。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/panghairui/image-hosting@master/panghairui-blog/image.3413npm503s0.png"></p>
-<p>标记完之后，我们就可以选择直接<strong>清除</strong>，只要不被 <strong>GC Roots</strong> 关联的，都可以干掉。</p>
-<p>过程非常简单粗暴，但也存在明显的问题。</p>
-<p>直接清除会有<strong>内存碎片</strong>的问题：可能我有 10M 的空余内存，但程序申请 9M 内存空间却申请不下来（有内存碎片，内存空间不连续）</p>
-<p><img src="https://cdn.jsdelivr.net/gh/panghairui/image-hosting@master/panghairui-blog/image.3787f1h69um0.png"></p>
-<p>那解决内存碎片的问题也比较简单粗暴，标记完，不直接清除。</p>
-<p>我把标记存活的对象复制到另一块空间，复制完了之后，直接把原有的整块空间给干掉！这样就没有内存碎片问题了。</p>
-<p>这种做法缺点又很明显：内存利用率低，得有一块新的区域给我复制过去。</p>
-<p>还有一种折中的做法，把存活的对象移到一边，把垃圾移到一边，那再将垃圾一起删除掉，不就没有内存碎片了嘛。</p>
-<p>这种专业的术语叫做整理。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/panghairui/image-hosting@master/panghairui-blog/image.3ucvw6zlsq8.png"></p>
-<p>这就是 <strong>标记清除 标记整理 复制</strong> 算法的概念。</p>
-<hr>
-<h2 id="堆（新生代，老年代）"><a href="#堆（新生代，老年代）" class="headerlink" title="堆（新生代，老年代）"></a>堆（新生代，老年代）</h2><p>经研究表明：大部分对象的生命周期都很短，而只有少部分对象可能会存活很长时间。</p>
-<p>又由于<strong>垃圾回收</strong>是会导致 <strong>stop the world</strong> （应用停止访问）</p>
-<p>回收垃圾的时候，程序是又是有短暂的时间不能正常继续运作的，不然JVM在回收的时候，用户线程还继续分配引用，JVM怎么搞。</p>
-<p>为了使 <strong>stop the world</strong> 持续的时间尽可能短以及提高并发式 GC 所能应付的内存分配速率。</p>
-<p>在很多垃圾回收器上都会在 <strong>物理</strong> 或者 <strong>逻辑</strong> 上，把这两类对象进行区分。</p>
-<p>死的快的对象所占的区域叫做 <strong>年轻代</strong>，活的久的对象所占的区域叫做 <strong>老年代</strong>。</p>
-<p>但不是所有的 <strong>垃圾回收器</strong> 都会有，比如高版本所使用的垃圾收集器的ZGC是没有分代的概念的。</p>
-<hr>
-<h2 id="垃圾收集器"><a href="#垃圾收集器" class="headerlink" title="垃圾收集器"></a>垃圾收集器</h2><p>说一下 JDK8 生产环境及其他常见的垃圾回收器有：</p>
-<p><strong>年轻代</strong>：Serial、Parallel Scavenge、ParNew</p>
-<p><strong>老年代</strong>：Serial Old、Parallel Old、CMS</p>
-<p>Serial是单线程，Parallel是多线程</p>
-<p>这些垃圾回收器实际上就是实现了垃圾回收算法</p>
-<p>CMS 在 <strong>JDK8之前</strong> 是比较新的垃圾回收器，它的特点是能够尽可能减少 <strong>stop the world</strong> 时间。在垃圾回收时让用户线程和GC线程能够并发执行。</p>
-<p>又可以发现，<strong>年轻代</strong> 的垃圾收集器使用的都是 <strong>复制算法</strong></p>
-<p>所以在 <strong>堆内存</strong> 划分中，将年轻代划分出Survivor区，目的就是为了有一块完整的内存空间供垃圾回收器进行拷贝。</p>
-<p>而新的对象则放入 Eden 区</p>
-<p><img src="https://cdn.jsdelivr.net/gh/panghairui/image-hosting@master/panghairui-blog/image.5how8xd3o0g0.png"></p>
-<p>那么什么时候对象会进到老年代呢？</p>
-<p>我认为有两种情况：</p>
+                <h1 id="阶段性总结-2021-7-21"><a href="#阶段性总结-2021-7-21" class="headerlink" title="阶段性总结-2021.7.21"></a>阶段性总结-2021.7.21</h1><hr>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>从离开校园到现在，大概有三周的时间了。这段时间有很多收获，也有很多自己做的蠢事。</p>
+<p>这段时间，我一天的生活基本分为两个阶段</p>
 <ul>
-<li>如果对象太大了，就直接进入老年代</li>
-<li>如果对象太老了，就会晋升至老年代（默认15）</li>
+<li>实习</li>
+<li>自学</li>
 </ul>
-<p>Monor GC 什么时候会触发呢？</p>
-<p>Monor GC 其实就是年轻代GC。那在 <strong>年轻代</strong> GC的时候，从 GC Roots 出发，那不也会扫描到 <strong>老年代</strong> 的对象吗？那不就相当于全堆扫描吗？</p>
-<p>这样分代还有意义吗？</p>
-<p>这里 JVM 里也有解决办法的。HotSpot 虚拟机 <strong>老的GC</strong> （G1以下）是要求整个GC堆在连续的地址空间上。</p>
-<p>所以会有一条分界线（一侧是老年代，另一侧是年轻代），所以可以通过 <strong>地址</strong> 就可以判断对象在哪个分代上。</p>
-<p>做 Monor GC 的时候，从 GC Roots 出发，如果发现 <strong>老年代</strong> 的对象，那就不往下走了（Monor GC 对老年代的区域毫无兴趣）</p>
-<p>但又有个问题，如果 <strong>年轻代</strong> 的对象被 <strong>老年代</strong> 引用了呢？（老年代对象持有年轻代对象的引用），那时候肯定是不能回收掉 <strong>年轻代</strong> 的对象的。</p>
-<p>HotSpot 虚拟机下 有 <strong>card table</strong>（卡表）来避免全局扫描 <strong>老年代</strong> 对象。</p>
-<p><strong>堆内存</strong> 的每一小块区域形成 <strong>卡表</strong>，卡表实际上就是卡页的集合。当判断一个卡页中有存在对象的跨代引用时，将这个页标记为 <strong>脏页</strong>。</p>
-<p>那知道了 <strong>卡表</strong> 之后，就很好办了。每次 Monor GC 的时候只需要去 <strong>卡表</strong> 找到 <strong>脏页</strong>，找到后加入至 GC Root，而不用去遍历整个 <strong>老年代</strong> 的对象了。</p>
+<p>我需要总结一下 <strong>实习</strong> 和 <strong>自学</strong> 过程中，自己走过的坑和自己需要改进的点。</p>
+<p>终生学习，不断进步。</p>
+<h2 id="水滴实习"><a href="#水滴实习" class="headerlink" title="水滴实习"></a>水滴实习</h2><p>从校园学子到职场新人，适应职场是我面临的第一个挑战。</p>
+<p>目前看来，我最应该做的还是尽快<strong>提高自己的水平</strong>以应对各种需求，尽快<strong>熟悉公司各种平台</strong>。</p>
+<p>部门大佬有很多，我是最菜的那一个。见识到了差距，所以对知识的渴望也更加强烈。</p>
+<p>因为我大二在搞虚幻四游戏引擎方向，到了大三才进军的 Java，所以在基础方面还有太多需要查缺补漏的地方。</p>
+<p>总得来说，我们部门的氛围还是很舒服的。大家都很努力，之前看过脉脉上的评价，都说水滴太“卷”了。其实还好，我觉得水滴作息安排的很好，午休2小时，晚餐1小时，也没感觉太过劳累。</p>
+<p>慢慢适应公司项目和平台，是我目前应该去做的事。</p>
+<h2 id="自学"><a href="#自学" class="headerlink" title="自学"></a>自学</h2><p>在自学这一块，我可谓是做的一塌糊涂。</p>
+<p>尼玛，是我没认真自学吗？错！</p>
+<p>我每天下班到家，就算再累，都会保持两小时学习时间。</p>
+<p>但是学的太分散了，我现在再想一下我的自学历程，我都觉得离谱。</p>
+<p><strong>给大家分享一下我最近的自学历程（看个笑话）：</strong></p>
+<p>听了 leader 的建议，买了《maven实战》实体书，存了《鸟哥私房菜》的电子书。</p>
+<p>因为自己的网络欠缺，翻出了以前读了一部分的《计算机网络自顶向下》。</p>
+<p>因为朋友和技术博主推荐，买了《深入理解 Java 虚拟机》。</p>
+<p>因为自己对优秀的代码设计的向往，存了《研磨设计模式》电子书。</p>
+<p>光电子书，我就搜罗了一大堆。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/panghairui/image-hosting@master/panghairui-blog/image.4ntypnsqfl60.png"></p>
+<p><strong>你以为只是看书？</strong></p>
+<p>我每天回家最起码要刷 1 - 2 道leetcode。（保持编码手感，锻炼逻辑思维，防止老年痴呆）</p>
+<p>学习 b 站视频《操作系统（哈工大李治军老师）32讲》</p>
+<p>学习慕课网视频《Redis 从入门到高可用分布式实践》</p>
+<p>学习Guide哥的文章《从零开始实现一个 RPC 框架》</p>
+<p>学习左神的视频</p>
+<p>。。。。。。。。</p>
+<p><strong>结果呢？</strong></p>
+<p>《Maven实战》看了前5章，像《鸟哥私房菜》《计算机网络自顶向下》《研磨设计模式》就看了一章。《操作系统（哈工大李治军老师）32讲》看了一集，《Redis 从入门到高可用分布式实践》看了一章，左神的视频看了两集。</p>
+<p>相信大家从我的博客上就能看出来，我最近开了好多文章，但是都只写了一点。</p>
+<p><strong>这种学习方式，简直是一个人开多核 CPU 也学不完。</strong></p>
+<p>学习方法出了问题啊，我现在更应该循序渐进，把一个东西看完研究透再去看下一个。</p>
 <hr>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p><strong>什么是垃圾</strong>：只要对象不再被使用，那即是垃圾</p>
-<p><strong>如何判断为垃圾</strong>：可达性分析算法和引用计算算法，JVM使用的是可达性分析算法</p>
-<p><strong>什么是GC Roots</strong>：GC Roots是一组必须活跃的引用，跟GC Roots无关联的引用即是垃圾，可被回收</p>
-<p><strong>常见的垃圾回收算法</strong>：标记清除、标记复制、标记整理</p>
-<p><strong>为什么需要分代</strong>：大部分对象都死得早，只有少部分对象会存活很长时间。在堆内存上都会在物理或逻辑上进行分代，为了使「stop the word」持续的时间尽可能短以及提高并发式GC所能应付的内存分配速率。</p>
-<p><strong>Minor GC</strong>：当Eden区满了则触发，从GC Roots往下遍历，年轻代GC不关心老年代对象</p>
-<p><strong>什么是card table</strong>【卡表】：空间换时间（类似bitmap），能够避免扫描老年代的所有对应进而顺利进行Minor GC （案例：老年代对象持有年轻代对象引用）</p>
-<p><strong>堆内存占比</strong>：年轻代占堆内存1/3，老年代占堆内存2/3。Eden区占年轻代8/10，Survivor区占年轻代2/10（其中From 和To 各站1/10)</p>
+<h2 id="下阶段计划"><a href="#下阶段计划" class="headerlink" title="下阶段计划"></a>下阶段计划</h2><p>自学方法出了问题，自然要改正，并给自己制定计划。</p>
+<p><strong>书籍方面</strong></p>
+<p>我决定参加这次 Guide 哥的读书活动，学一些并发编程的知识，我们 leader 也说过，凡是涉及到 <strong>写</strong> 的问题，都要考虑并发。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/panghairui/image-hosting@master/panghairui-blog/image.1x1ewx5bd6y.png"></p>
+<p>其他书籍先放一放，一本一本的看。</p>
+<p><strong>视频方面</strong></p>
+<p>视频方面我打算跟两个。</p>
+<p>一个是《操作系统（哈工大李治军老师）32讲》，操作系统是每个程序员的基本功，我得深入系统的学习一下。</p>
+<p>还有一个是《Redis 从入门到高可用分布式实践》，不会吧不会吧，不会还有人不学 Redis 吧。</p>
+<p><strong>每天应保持</strong></p>
+<ul>
+<li>1 - 2道 leetcode</li>
+<li>视频跟看 1 集，并做相应笔记</li>
+<li>读书 30 分钟（一般睡前读，读的犯困了直接睡）</li>
+</ul>
+<hr>
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>我一直希望自己以后可以成为一名优秀的程序员，希望自己在 35 岁不被淘汰。</p>
+<p>所以才要 <strong>终生学习，不断总结</strong> 。</p>
+<p>这是我的第一个阶段性总结，但不会是最后一个。</p>
 
                 
             </div>
@@ -536,7 +518,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://example.com/2021/07/19/jvm-la-ji-hui-shou-xue-xi-bi-ji/">http://example.com/2021/07/19/jvm-la-ji-hui-shou-xue-xi-bi-ji/</a>
+                    <a href="http://example.com/2021/07/21/jie-duan-xing-zong-jie-20210721/">http://example.com/2021/07/21/jie-duan-xing-zong-jie-20210721/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -574,12 +556,8 @@
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/Java/">
-                                    <span class="chip bg-color">Java</span>
-                                </a>
-                            
-                                <a href="/tags/JVM/">
-                                    <span class="chip bg-color">JVM</span>
+                                <a href="/tags/%E9%98%B6%E6%AE%B5%E6%80%A7%E6%80%BB%E7%BB%93/">
+                                    <span class="chip bg-color">阶段性总结</span>
                                 </a>
                             
                         </div>
@@ -886,9 +864,10 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/2021/07/21/jie-duan-xing-zong-jie-20210721/">
                     <div class="card-image">
@@ -905,9 +884,9 @@
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2021-07-21
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-07-21
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
@@ -920,6 +899,7 @@
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
@@ -938,30 +918,30 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2021/07/12/shou-xie-rpc-kuang-jia/">
+                <a href="/2021/07/19/jvm-la-ji-hui-shou-xue-xi-bi-ji/">
                     <div class="card-image">
                         
-                        <img src="https://cdn.jsdelivr.net/gh/panghairui/image-hosting@master/panghairui-blog/7e4afde0d80946dea5898e2dfa559b81.2gb0w7of6sw0.png" class="responsive-img" alt="手写RPC框架">
+                        <img src="https://cdn.jsdelivr.net/gh/panghairui/image-hosting@master/panghairui-blog/75e32c6f9db74df8917dd9163219fefd.4ys7phsa1d00.jpg" class="responsive-img" alt="JVM垃圾回收机制">
                         
-                        <span class="card-title">手写RPC框架</span>
+                        <span class="card-title">JVM垃圾回收机制</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            手写RPC框架，并不断优化
+                            JVM垃圾回收机制学习笔记
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-07-12
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-07-19
                             </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/RPC%E6%A1%86%E6%9E%B6/" class="post-category">
-                                    RPC框架
+                            <a href="/categories/Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="post-category">
+                                    Java学习笔记
                                 </a>
                             
                             
@@ -971,8 +951,12 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/RPC%E6%A1%86%E6%9E%B6/">
-                        <span class="chip bg-color">RPC框架</span>
+                    <a href="/tags/Java/">
+                        <span class="chip bg-color">Java</span>
+                    </a>
+                    
+                    <a href="/tags/JVM/">
+                        <span class="chip bg-color">JVM</span>
                     </a>
                     
                 </div>

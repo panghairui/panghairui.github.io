@@ -404,14 +404,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    2k
+                    2.6k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    8 分
+                    10 分
                 </div>
                 
 
@@ -435,6 +435,9 @@
         <div class="card-content article-card-content">
             <div id="articleContent">
                 <h1 id="手写-RPC-框架"><a href="#手写-RPC-框架" class="headerlink" title="手写 RPC 框架"></a>手写 RPC 框架</h1><hr>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>看了Guide哥的手写RPC框架文章，感觉非常不错，对我帮助很大。</p>
+<p>记录编写RPC框架的学习过程与编码过程，不断提高。</p>
+<hr>
 <h2 id="什么是-RPC-框架？"><a href="#什么是-RPC-框架？" class="headerlink" title="什么是 RPC 框架？"></a>什么是 RPC 框架？</h2><h3 id="什么是-RPC-？"><a href="#什么是-RPC-？" class="headerlink" title="什么是 RPC ？"></a>什么是 RPC ？</h3><p>RPC（Remote Procedure Call）即远程过程调用，RPC关注的是远程调用，而非本地调用。</p>
 <p><strong>为什么要 RPC ?</strong> 因为两个不同的服务器上的服务提供的方法不在一个内存空间，所以，需要通过网络编程才能传递方法调用所需要的参数。并且，方法调用的结果也需要通过网络编程来接收。但是，如果我们自己手动网络编程来实现这个调用过程的话工作量是非常巨大的。因为，我们需要考虑底层传输方式（ TCP 还是 UDP ）、序列化方式等等方面。</p>
 <p><strong>RPC 能帮助我们做什么呢？</strong> 通过 RPC 可以帮助我们调用远程计算机上某个服务的方法，这个过程就像调用本地方法一样简单。并且，我们不需要了解底层网络编程的具体细节。</p>
@@ -461,7 +464,28 @@
 <li>客户端 Stub （client stub）接收到消息并将消息反序列化为Java对象：RpcResponse，这样就得到了最终结果。</li>
 </ol>
 <hr>
-<h2 id="第一版"><a href="#第一版" class="headerlink" title="第一版"></a>第一版</h2><h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>心动不如行动，先写一个简易版的RPC框架。熟悉一下 RPC 的基本通信过程。</p>
+<h2 id="常见RPC框架"><a href="#常见RPC框架" class="headerlink" title="常见RPC框架"></a>常见RPC框架</h2><h3 id="Dubbo"><a href="#Dubbo" class="headerlink" title="Dubbo"></a>Dubbo</h3><p>Apache Dubbo 是一款高性能、轻量级的开源 Java RPC 框架，它提供了三大核心能力</p>
+<ul>
+<li>面向接口的远程方法调用</li>
+<li>智能容错和负载均衡</li>
+<li>服务自动注册和发现</li>
+</ul>
+<p>Dubbo是一个分布式服务框架，致力于提供高性能和透明化的 RPC 远程服务调用方案，以及 SOA 服务治理方案。</p>
+<p>由阿里开源，后来加入了 Apache。</p>
+<h3 id="Motan"><a href="#Motan" class="headerlink" title="Motan"></a>Motan</h3><p>2016年新浪微博开源的一套 RPC 框架，据说在新浪微博正支撑着千亿次调用。但是很少看到有公司使用。</p>
+<p>Motan 更像是一个精简版的 dubbo，可能是借鉴了 Dubbo 的思想，motan 的设计更加精简，功能更加纯粹。</p>
+<p>但是实际使用的话，还是推荐 Dubbo，其社区活跃度以及生态都要好很多。</p>
+<h3 id="gRPC"><a href="#gRPC" class="headerlink" title="gRPC"></a>gRPC</h3><p>Google 开源的一个高性能、通用的开源 RPC 框架。主要面向移动应用开发并基于 HTTP/2 协议标准而设计，基于 ProtoBuf 序列化协议开发，并且支持众多开发语言。</p>
+<p>通过 ProtoBuf 定义接口和数据类型比较繁琐。</p>
+<h3 id="Thrift"><a href="#Thrift" class="headerlink" title="Thrift"></a>Thrift</h3><p>Apache Thrift 是 Facebook 开源的跨语言的 RPC 通信框架，目前已经捐献给 Apache 基金会管理，由于其跨语言特性和出色的性能，在很多互联网公司应用，有能力的公司甚至会基于 thrift 研发一套分布式服务框架，增加诸如服务注册、服务发现等功能。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>gRPC 和 Thrift 虽然支持跨语言的 RPC 调用，但是因为它们只提供了最基本的 RPC 框架功能，缺乏一系列配套的服务化组件和服务治理功能的支撑。</p>
+<p>Dubbo 不论是从功能完善程度、生态系统还是社区活跃度来说都是最优秀的。最重要的是在国内有很多成功案例如当当网、滴滴等。</p>
+<p>另外，Dubbo 也是 Spring Cloud Alibaba 里面的一个组件。</p>
+<p>综上，如果是 Java 后端技术栈，Dubbo是不错的选择。</p>
+<hr>
+<h2 id="开始前的准备"><a href="#开始前的准备" class="headerlink" title="开始前的准备"></a>开始前的准备</h2><p>一般情况下，RPC 框架不仅要提供服务发现功能，还要提供负载均衡、容错等功能，这样的 RPC 框架才算真正的合格。</p>
+<hr>
+<h2 id="第一版"><a href="#第一版" class="headerlink" title="第一版"></a>第一版</h2><h3 id="前言-1"><a href="#前言-1" class="headerlink" title="前言"></a>前言</h3><p>心动不如行动，先写一个简易版的RPC框架。熟悉一下 RPC 的基本通信过程。</p>
 <h3 id="过程"><a href="#过程" class="headerlink" title="过程"></a>过程</h3><p>1.首先创建一个 User 对象，这是客户端和服务端都已知的，客户端需要得到这个对象，而服务端需要操作这个对象</p>
 <pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Data</span>
 <span class="token annotation punctuation">@Builder</span>
@@ -726,7 +750,7 @@
 <p><strong>结果</strong></p>
 <p><img src="https://cdn.jsdelivr.net/gh/panghairui/image-hosting@master/panghairui-blog/image.7k217izrv6c0.png"></p>
 <p><img src="https://cdn.jsdelivr.net/gh/panghairui/image-hosting@master/panghairui-blog/image.1vqo9ij6heg0.png"></p>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p><strong>存在痛点分析</strong></p>
+<h3 id="总结-1"><a href="#总结-1" class="headerlink" title="总结"></a>总结</h3><p><strong>存在痛点分析</strong></p>
 <ul>
 <li>服务端直接绑定的是 UserService 服务，如果还有其他服务接口呢？（多个服务的注册问题）</li>
 <li>服务端以 BIO 的方式性能太低（性能问题）</li>
