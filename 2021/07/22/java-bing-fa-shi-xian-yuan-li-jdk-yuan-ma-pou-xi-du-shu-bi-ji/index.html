@@ -408,14 +408,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    492
+                    825
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    1 分
+                    2 分
                 </div>
                 
 
@@ -468,6 +468,20 @@
 <h3 id="InterruptedException-函数与-interrupt-函数"><a href="#InterruptedException-函数与-interrupt-函数" class="headerlink" title="InterruptedException() 函数与 interrupt() 函数"></a>InterruptedException() 函数与 interrupt() 函数</h3><hr>
 <h4 id="什么情况下会抛出-Interrupted-异常"><a href="#什么情况下会抛出-Interrupted-异常" class="headerlink" title="什么情况下会抛出 Interrupted 异常"></a>什么情况下会抛出 Interrupted 异常</h4><p>只有那些声明了会抛出 InterruptedException 的函数才会抛出异常，也就是 sleep() wait() join()。</p>
 <p>看这个就懂了：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/expiator/p/9265774.html">interrupt()方法的简单理解</a></p>
+<hr>
+<h3 id="轻量级阻塞与重量级阻塞"><a href="#轻量级阻塞与重量级阻塞" class="headerlink" title="轻量级阻塞与重量级阻塞"></a>轻量级阻塞与重量级阻塞</h3><p>能被中断的阻塞，被称为<strong>轻量级阻塞</strong>，对应的线程状态是 WAITING 或者 TIMED_WAITING 。</p>
+<p>而像 synchronized 这种不能被中断的阻塞称为<strong>重量级阻塞</strong>，对应的状态是 BLOCKED。</p>
+<p>下图是一个线程完整的状态迁移过程</p>
+<p><img src="https://cdn.jsdelivr.net/gh/panghairui/image-hosting@master/panghairui-blog/image.h69rv8ust3k.png" alt="线程的状态迁移过程"></p>
+<p>初始线程处于 NEW 状态，调用 start() 之后开始执行，进入 RUNNING 或者 READY 状态，如果没有调用任何的阻塞函数，线程只会在 RUNNING 和 READY 之间切换，也就是系统时间片调度。</p>
+<p>这两种状态的切换是操作系统完成的，开发者基本没有机会介入，除了可以调用 yield() 函数，放弃对 CPU 的占用。</p>
+<p>一旦调用了图中的任何阻塞函数，线程就会进入 WAITING 或者 TIMED_WAITING 状态。</p>
+<p>WAITING 是<strong>无限期阻塞</strong></p>
+<p>TIMED_WAITING 传入了一个时间参数，阻塞一个有限的时间。</p>
+<p>如果使用了 synchronized 关键字或者 synchronized 块，则会进入 BLOCKED 状态。</p>
+<p>除了常用的 阻塞 / 唤醒 函数，还有一些不太常见的函数。</p>
+<p>比如 LockSupport.park() / unpack()，这对函数非常关键，Concurrent 包中 Lock 的实现依赖这一对操作原语。</p>
+<p>所以，interrupted()的精确含义是 <strong>唤醒轻量级阻塞</strong> ，而不是 <strong>中断一个线程</strong>。</p>
 <hr>
 
                 
