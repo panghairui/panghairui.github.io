@@ -469,7 +469,7 @@
 <h4 id="什么情况下会抛出-Interrupted-异常"><a href="#什么情况下会抛出-Interrupted-异常" class="headerlink" title="什么情况下会抛出 Interrupted 异常"></a>什么情况下会抛出 Interrupted 异常</h4><p>只有那些声明了会抛出 InterruptedException 的函数才会抛出异常，也就是 sleep() wait() join()。</p>
 <p>看这个就懂了：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/expiator/p/9265774.html">interrupt()方法的简单理解</a></p>
 <hr>
-<h3 id="轻量级阻塞与重量级阻塞"><a href="#轻量级阻塞与重量级阻塞" class="headerlink" title="轻量级阻塞与重量级阻塞"></a>轻量级阻塞与重量级阻塞</h3><p>能被中断的阻塞，被称为<strong>轻量级阻塞</strong>，对应的线程状态是 WAITING 或者 TIMED_WAITING 。</p>
+<h4 id="轻量级阻塞与重量级阻塞"><a href="#轻量级阻塞与重量级阻塞" class="headerlink" title="轻量级阻塞与重量级阻塞"></a>轻量级阻塞与重量级阻塞</h4><p>能被中断的阻塞，被称为<strong>轻量级阻塞</strong>，对应的线程状态是 WAITING 或者 TIMED_WAITING 。</p>
 <p>而像 synchronized 这种不能被中断的阻塞称为<strong>重量级阻塞</strong>，对应的状态是 BLOCKED。</p>
 <p>下图是一个线程完整的状态迁移过程</p>
 <p><img src="https://cdn.jsdelivr.net/gh/panghairui/image-hosting@master/panghairui-blog/image.h69rv8ust3k.png" alt="线程的状态迁移过程"></p>
