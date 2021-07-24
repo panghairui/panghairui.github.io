@@ -408,14 +408,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    1k
+                    1.6k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    3 分
+                    5 分
                 </div>
                 
 
@@ -499,7 +499,41 @@
 <p>就是对 class 模版加锁（因为是静态）</p>
 <p>所以，一个静态函数和一个非静态函数都加了 synchronized 关键字，分别被两个线程调用，并不会互斥，因为是两把不同的锁。</p>
 <hr>
-<h4 id="3-2-锁的本质是什么"><a href="#3-2-锁的本质是什么" class="headerlink" title="3.2 锁的本质是什么"></a>3.2 锁的本质是什么</h4>
+<h4 id="3-2-锁的本质是什么"><a href="#3-2-锁的本质是什么" class="headerlink" title="3.2 锁的本质是什么"></a>3.2 锁的本质是什么</h4><p><img src="https://cdn.jsdelivr.net/gh/panghairui/image-hosting@master/panghairui-blog/image.4idbxsjpvua0.png" alt="线程、锁和资源的关系"></p>
+<p>锁其实就是一个对象，这个对象要完成以下几件事情：</p>
+<ul>
+<li>内部有一个标志位（status 变量），记录自己有没有被某个线程占用。最简单的情况是这个 status 有 0、1 两个取值，0 表示没有线程占用这个锁，1 表示某个线程占用了这个锁。</li>
+<li>如果这个对象被某个线程占用，它得记录这个线程的 thread ID，知道自己被哪个线程占用了。</li>
+<li>这个对象还得维护一个 thread id list，记录其他所有阻塞的、等待拿这个锁的线程。当线程释放锁之后，从这个 thread id list 里面取一个线程唤醒。</li>
+</ul>
+<hr>
+<h4 id="3-3-synchronized-实现原理"><a href="#3-3-synchronized-实现原理" class="headerlink" title="3.3 synchronized 实现原理"></a>3.3 synchronized 实现原理</h4><p>在 Java 的对象头里，有一块数据叫 Mark Word。</p>
+<p>在 64 位机器上，Mark Word 是8字节（64位）的，这 64 位中有 2 个重要字段：锁标志位和占用该锁的 thread ID。</p>
+<p>不同版本的 JVM 实现，对象头的数据结构会有各种差异。</p>
+<hr>
+<h3 id="四、wait-与-notify"><a href="#四、wait-与-notify" class="headerlink" title="四、wait() 与 notify()"></a>四、wait() 与 notify()</h3><hr>
+<h4 id="4-1-生产者-消费者模型"><a href="#4-1-生产者-消费者模型" class="headerlink" title="4.1 生产者-消费者模型"></a>4.1 生产者-消费者模型</h4><p><img src="https://cdn.jsdelivr.net/gh/panghairui/image-hosting@master/panghairui-blog/image.3aiglvhk93e0.png" alt="生产者-消费者模型"></p>
+<p>一个内存队列，多个<strong>生产者</strong>线程往内存队列中放数据。</p>
+<p>多个<strong>消费者</strong>线程从内存队列中取数据。</p>
+<p>要想实现这样的一个编程模型，我们应该做到</p>
+<ul>
+<li>内存队列本身要加锁，才能实现线程安全。</li>
+<li>阻塞。当内存队列满了，生产者放不进去时，会被阻塞。当内存队列是空的时，消费者无事可做，也会被阻塞。</li>
+<li>双向通知。消费者被阻塞之后，生产者放入新数据，要 notify() 消费者。反之，生产者被阻塞后，消费者消费了数据，要 notify() 生产者。</li>
+</ul>
+<p>但是在代码层面，要<strong>如何阻塞</strong>？<strong>如何双向通知</strong>呢？</p>
+<p><strong>如何阻塞</strong></p>
+<ul>
+<li>线程自己阻塞自己，也就是生产者、消费者线程各自调用 wait() 和 notify()。</li>
+<li>用一个阻塞队列，当取不到或者放不进去数据的时候，入队 / 出队 函数本身就是阻塞的。</li>
+</ul>
+<p><strong>如何双向通知</strong></p>
+<ul>
+<li>wait() 与 notify() 机制。</li>
+<li>Condition 机制。</li>
+</ul>
+<hr>
+
                 
             </div>
             <hr/>
