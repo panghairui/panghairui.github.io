@@ -446,7 +446,8 @@
 <p>保证每天看一点，记一点，进步一点。</p>
 <hr>
 <h2 id="多线程基础"><a href="#多线程基础" class="headerlink" title="多线程基础"></a>多线程基础</h2><hr>
-<h3 id="一、线程的优雅关闭"><a href="#一、线程的优雅关闭" class="headerlink" title="一、线程的优雅关闭"></a>一、线程的优雅关闭</h3><h4 id="1-1-stop-与-destroy-函数"><a href="#1-1-stop-与-destroy-函数" class="headerlink" title="1.1 stop() 与 destroy() 函数"></a>1.1 stop() 与 destroy() 函数</h4><p>不要用 stop() 与 destroy() <strong>强制关闭</strong>线程。</p>
+<h3 id="一、线程的优雅关闭"><a href="#一、线程的优雅关闭" class="headerlink" title="一、线程的优雅关闭"></a>一、线程的优雅关闭</h3><hr>
+<h4 id="1-1-stop-与-destroy-函数"><a href="#1-1-stop-与-destroy-函数" class="headerlink" title="1.1 stop() 与 destroy() 函数"></a>1.1 stop() 与 destroy() 函数</h4><p>不要用 stop() 与 destroy() <strong>强制关闭</strong>线程。</p>
 <p>因为<strong>强制关闭</strong>线程，线程中使用的资源，例如文件描述符、网络连接等不能正常的关闭。</p>
 <p>合理的办法是让它运行完，干净利落的释放掉全部资源。</p>
 <p>如果是一个不断循环的线程，就利用线程的通信机制，让主线程通知其退出。</p>
