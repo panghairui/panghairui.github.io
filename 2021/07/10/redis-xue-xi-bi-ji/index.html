@@ -404,14 +404,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    1.9k
+                    2k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    7 分
+                    8 分
                 </div>
                 
 
@@ -671,15 +671,20 @@ sdiff key1 key2 # 差集
 sinter key1 key2 # 交集
 sunion key1 key2 # 并集<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
+<hr>
+<h3 id="有序集合"><a href="#有序集合" class="headerlink" title="有序集合"></a>有序集合</h3><h4 id="结构-2"><a href="#结构-2" class="headerlink" title="结构"></a>结构</h4><p><img src="https://cdn.jsdelivr.net/gh/panghairui/image-hosting@master/panghairui-blog/image.6a2uqdchz640.png"></p>
+<h4 id="常用命令-3"><a href="#常用命令-3" class="headerlink" title="常用命令"></a>常用命令</h4><pre class="line-numbers language-none"><code class="language-none">zadd key score element(可以是多对) # 添加 score 和 element O(logN)
+zrem key element(可以是多对) # 删除元素
 
+zscore key element # 返回元素的分数
+zincrby key increScore element # 增加或减少元素的分数
+zcard key # 返回元素的总个数
 
-
-
-
-
-
-
-
+zrange key start end [WITHSCORES] # 返回指定索引范围内的升序元素[分值]O(logN+M)
+zrangebyscore key minScore maxScore [WITHSCORES] # 按分数O(logN+M)
+zcount key minScore maxScore # 返回指定分数范围内的个数
+zremrangebyrank key start end # 删除指定排名内的升序元素
+zremrangebyscore key minScore maxScore # 按分值<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <hr>
 <h2 id="Redis-客户端的使用"><a href="#Redis-客户端的使用" class="headerlink" title="Redis 客户端的使用"></a>Redis 客户端的使用</h2><hr>

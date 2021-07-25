@@ -408,14 +408,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    1.6k
+                    2.3k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    5 分
+                    8 分
                 </div>
                 
 
@@ -533,6 +533,54 @@
 <li>wait() 与 notify() 机制。</li>
 <li>Condition 机制。</li>
 </ul>
+<hr>
+<h4 id="4-2-为什么和-synchronized-一起使用"><a href="#4-2-为什么和-synchronized-一起使用" class="headerlink" title="4.2 为什么和 synchronized 一起使用"></a>4.2 为什么和 synchronized 一起使用</h4><p>假设两个线程之间要通信，对于同一个对象来说，一个线程调用该对象的 wait()，另一个线程调用该对象的 notify()，该对象本身就需要同步。</p>
+<p>所以，加 synchronized 主要是为了同步。</p>
+<hr>
+<h4 id="4-3-为什么-wait-的时候必须释放锁"><a href="#4-3-为什么-wait-的时候必须释放锁" class="headerlink" title="4.3 为什么 wait() 的时候必须释放锁"></a>4.3 为什么 wait() 的时候必须释放锁</h4><p>当线程 A 加锁调用 wait() 方法之后，此时 wait() 进入阻塞状态，如果 wait() 不释放锁，岂不是其他线程都唤醒不了该线程了？</p>
+<p>所以，在 wait() 内部，会先释放掉锁，然后进入阻塞状态，之后被另一个线程唤醒，去重新拿锁。</p>
+<blockquote>
+<p>面试官问 sleep() 和 wait() 的区别的时候可以答出这一点，sleep() 是抱着锁睡，wait() 会释放锁</p>
+</blockquote>
+<hr>
+<h4 id="4-4-wait-与-notify-的问题"><a href="#4-4-wait-与-notify-的问题" class="headerlink" title="4.4 wait() 与 notify() 的问题"></a>4.4 wait() 与 notify() 的问题</h4><p>问题就是没法精确唤醒。</p>
+<p>因为 wait() 和 notify() 作用的对象和 synchronized 作用的对象是同一个，每个对象没有区分标识。</p>
+<p>精确唤醒我们可以用 Condition 来实现。</p>
+<hr>
+<h3 id="五、volatile-关键字"><a href="#五、volatile-关键字" class="headerlink" title="五、volatile 关键字"></a>五、volatile 关键字</h3><hr>
+<h4 id="5-1-64-位写入的原子性"><a href="#5-1-64-位写入的原子性" class="headerlink" title="5.1 64 位写入的原子性"></a>5.1 64 位写入的原子性</h4><p>多线程场景下，线程 A 调用 set(100)，线程 B 调用 get()，在某些场景下，返回值可能不是 100 。</p>
+<p>这是因为 JVM 规范没有要求 64 位的 long 或者 double 的写入是原子的。在 32 位的机器上，一个 64 位变量的写入可能被拆分成两个 32 位的写操作来执行。这样一来，读取线程就可能读到 <strong>一半的值</strong> 。</p>
+<p>解决办法也很简单，在 long 前面加上 volatile 关键字。</p>
+<hr>
+<h4 id="5-2-内存可见性"><a href="#5-2-内存可见性" class="headerlink" title="5.2 内存可见性"></a>5.2 内存可见性</h4><p>不仅 64 位，32 位或者位数更小的赋值和取值操作，其实也有问题。</p>
+<p>比如一个线程修改变量值为 true 之后，另一个线程去读，读到的事 false，但是之后能读到 true。也就是 <strong>最终一致性</strong>，不是 <strong>强一致性</strong>。</p>
+<p>所以，我们说的 <strong>内存可见性</strong>， 指的是 <strong>写完之后立即对其他线程可见</strong>，它的反面不是 <strong>不可见</strong>，而是 <strong>稍后才能看见</strong>。</p>
+<p>解决这个问题很容易，给变量加上 volatile 关键字即可。</p>
+<hr>
+<h4 id="5-3-重排序：DCL-问题"><a href="#5-3-重排序：DCL-问题" class="headerlink" title="5.3 重排序：DCL 问题"></a>5.3 重排序：DCL 问题</h4><p>单例模式的线程安全的写法不止一种，常用写法为 DCL（双重效验锁）。</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">case</span> <span class="token class-name">Sington</span> <span class="token punctuation">{</span>
+  
+  	<span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token class-name">Sington</span> instance<span class="token punctuation">;</span>
+  	
+  	<span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token class-name">Sington</span> <span class="token function">getInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      	<span class="token keyword">if</span> <span class="token punctuation">(</span>instance <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+          	<span class="token keyword">synchronized</span><span class="token punctuation">(</span><span class="token class-name">Sington</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+              	<span class="token keyword">if</span> <span class="token punctuation">(</span>instance <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span>
+                  	instance <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Instance</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>	<span class="token comment">// 有问题</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>上述的 instance = new Instance() 代码有问题</p>
+<p>其底层会分为三个操作</p>
+<p>（1）分配一块内存</p>
+<p>（2）在内存上初始化成员函数</p>
+<p>（3）把 instance 引用指向内存</p>
+<p><strong>但是（2）和（3）可能重排序。</strong>因为二者先后没有依赖关系。</p>
+<p>这样的话，另一个线程可能拿到一个未完全初始化的对象，直接去访问里面的成员变量，就可能出错。</p>
+<p>解决方法也很简单，就是为 instance 变量加上 volatile 修饰。</p>
 <hr>
 
                 
