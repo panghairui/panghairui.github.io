@@ -408,14 +408,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    2.3k
+                    3.1k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    8 分
+                    11 分
                 </div>
                 
 
@@ -581,6 +581,47 @@
 <p><strong>但是（2）和（3）可能重排序。</strong>因为二者先后没有依赖关系。</p>
 <p>这样的话，另一个线程可能拿到一个未完全初始化的对象，直接去访问里面的成员变量，就可能出错。</p>
 <p>解决方法也很简单，就是为 instance 变量加上 volatile 修饰。</p>
+<hr>
+<h3 id="六、JMM-与-happen-before"><a href="#六、JMM-与-happen-before" class="headerlink" title="六、JMM 与 happen-before"></a>六、JMM 与 happen-before</h3><hr>
+<h4 id="6-1-为什么会存在-内存可见性-问题"><a href="#6-1-为什么会存在-内存可见性-问题" class="headerlink" title="6.1 为什么会存在 内存可见性 问题"></a>6.1 为什么会存在 <strong>内存可见性</strong> 问题</h4><p>这里从 JMM 的角度来说，就是因为线程内存分为 <strong>线程本地内存</strong> 和 <strong>共享内存</strong>。</p>
+<p>我们在本地内存所做的修改无法及时刷新到共享内存，就会存在内存可见性问题。</p>
+<hr>
+<h4 id="6-2-重排序与内存可见性的关系"><a href="#6-2-重排序与内存可见性的关系" class="headerlink" title="6.2 重排序与内存可见性的关系"></a>6.2 重排序与内存可见性的关系</h4><p>重排序分类：</p>
+<ul>
+<li>编译器重排序：对于没有先后依赖关系的语句，编译器可以重新调整语句的执行顺序</li>
+<li>CPU 指令重排序：在指令级别，让没有依赖关系的多条指令并行</li>
+<li>CPU 内存重排序：CPU 有自己的缓存，指令的执行顺序和写入主内存的顺序不完全一致</li>
+</ul>
+<p>在三种重排序中，第三类就是造成 <strong>内存可见性</strong> 问题的主因。</p>
+<p>举个例子：</p>
+<p>假设有两个线程，线程 1 执行 X = 1 命令 和 a = Y 命令，线程 2 执行 Y = 1 命令 和 b = X 命令。</p>
+<p>最后 a、b 的结果应该是什么？</p>
+<p>因为 线程 1 和 线程 2 的执行顺序不确定，所以结果可能是</p>
+<ul>
+<li>a = 0, b = 1</li>
+<li>a = 1, b = 0</li>
+<li>a = 1, b = 1</li>
+</ul>
+<p>正常就这三种可能性，但实际还可能是 a = 0, b = 0，为什么呢？</p>
+<p>原因是 线程 1 先执行 X = 1 后执行 a = Y，但此时 X = 1 还在自己的 Store Buffer 里，但在 线程 2 看来，a = Y 和 X = 1 顺序却是颠倒的。指令没有重排序，写入内存的操作被延迟了，也就是内存被重排序了，这就造成内存可见行问题。</p>
+<hr>
+<h4 id="6-3-as-if-serial-语义"><a href="#6-3-as-if-serial-语义" class="headerlink" title="6.3 as-if-serial 语义"></a>6.3 as-if-serial 语义</h4><p>对于 开发者 而言，都不希望有任何重排序，这样理解和开发最简单。</p>
+<p>但是对于 CPU 而言，重排序能提升效率。</p>
+<p>于是问题就来了，重排序的原则是什么？</p>
+<p><strong>单线程程序的重排序规则</strong>：只要操作之间没有依赖性，编译器和 CPU 就可以任意重排序，因为执行结果不会改变。这也就是 as-if-serial 语义。</p>
+<p><strong>多线程程序的重排序规则</strong>：编译器和 CPU 只能保证每个线程的 as-if-serial 语义。线程之间的数据依赖和线程影响，需要编译器和 CPU 的上层来决定。</p>
+<hr>
+<h4 id="6-4-happen-before-是什么"><a href="#6-4-happen-before-是什么" class="headerlink" title="6.4 happen-before 是什么"></a>6.4 happen-before 是什么</h4><p>如果 A happen-before B，意味着 A 的执行结果必须对 B 可见，也就是保证跨线程的内存可见性。</p>
+<p>基于 happen-before 这种描述方法，JMM 对开发者做出了一系列承诺：</p>
+<ul>
+<li>单线程中的每个操作，happen-before 对应线程中任意后续操作</li>
+<li>对 volatile 变量的写入，happen-before 对应后续对这个变量的读取</li>
+<li>对 synchronized 的解锁，happen-before 对应后续对这个锁的加锁</li>
+</ul>
+<p>……</p>
+<p>对于非 volatile 变量的写入和读取，不在这个承诺之列。</p>
+<hr>
+<h4 id="6-5-happen-before-的传递性"><a href="#6-5-happen-before-的传递性" class="headerlink" title="6.5 happen-before 的传递性"></a>6.5 happen-before 的传递性</h4><p>如果 A happen-before B，B happen-before C，那么一定有 A happen-before C</p>
 <hr>
 
                 
